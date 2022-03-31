@@ -1,0 +1,19 @@
+{
+  "name": "Super-Spelling",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@replit/database": "^2.0.1",
+    "express": "^4.17.3",
+    "nunjucks": "^3.2.3",
+    "rate-limiter-flexible": "^2.3.6",
+    "socket.io": "^4.4.1"
+  }
+}

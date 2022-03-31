@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tricky Really</title>
+    <script src="/helpers/interface.js"></script>
+    <script src="/helpers/game.js"></script>
+    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+    <script src="socket.io/socket.io.js"></script>
+    
+  </head>
+  
+  <body onload="onload()">
+      <!--<a href='javascript:(function () {var script=document.createElement("script");script.src="//cdn.jsdelivr.net/npm/eruda";document.body.appendChild(script); script.onload = function () { eruda.init() } })();'>SCIRPT</a>-->
+		<div>
+      
+      {% if not loggedin %}
+      <h2>Please login</h2>
+      <script authed="location.reload()" src="/auth/script.js"></script>
+      {%else%}
+        <h3 id="username">Logged in as {{username}}.<br/><span id="status" style="color:black;">Loading...</span></h3>
+          <button class="center" style="border-radius:0;" id="START"></button>
+    
+        <div class="tooltip">
+          <span class="tooltiptext">Select Game</span>
+          <img id="select" src="/img/select.svg" width="100"/>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext">Leaderboard</span>
+          <img id="leaderboard" src="/img/leaderboard.svg" width="100"/>
+        </div>
+      {% endif %}
+    </div>
+    <center>
+      <img src="/img/logo.svg" width="60%"/>
+    </center>
+    <script>
+      var loggedin={{loggedin}};
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
