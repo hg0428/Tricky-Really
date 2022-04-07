@@ -32,7 +32,7 @@ const words = {
         riddle:"There's a trick, can you see it? Type it right and you get cheated."
     },
     'backwards': {
-        word: Random.choice(['what', 'random', 'superlongword']),
+        word: Random.choice(['what', 'random', 'superlongword', 'sloof lirpA']),
         trick: {
             type: 'backwards'
         },

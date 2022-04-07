@@ -89,8 +89,8 @@ Select.onclick = function() {
 }
 function makeLeaderboard(users, gen) {
   document.body.innerHTML = '<button onclick="location.reload();" class="back">Back</button><ul class="levels"><br/><br/><br/>';
-    for (user of users) {
-        let data = gen(user);
+    for (u of users) {
+        let data = gen(u);
         if (data === false) continue;
         document.body.innerHTML += `<li>${data}</li>`;
     }
@@ -98,19 +98,18 @@ function makeLeaderboard(users, gen) {
 }
 function levelLeaders(file, level) {
     let users = Object.values(Users);
-    console.log(Users, users);
     users.sort((u1, u2) => {
       if (u1.completed[file] && u1.completed[file][level] && u2.completed[file] && u2.completed[file][level]) {
         //return (u1.completed[file][level].time) - u2.completed[file][level].time;
-        return (2*u2.completed[file][level].score-u2.completed[file][level].time) - (2*u1.completed[file][level].score-u1.completed[file][level].time);
+        return (u2.completed[file][level].score-u2.completed[file][level].time) - (u1.completed[file][level].score-u1.completed[file][level].time);
       }
-      return u2.avg-u1.avg;
+      //return u2.avg-u1.avg;
     });
-    makeLeaderboard(users, user=>{
-      if (!user.completed[file] || !user.completed[file][level]) return false;
-      let data=user.completed[file][level];
-      if (data.score===0)return false;
-      return `<span style="font-size:18px;font-weight:bold;">${user.name}:</span> &nbsp; ${data.score}% in ${data.time/1000} seconds.`;//FIX LATER
+    makeLeaderboard(users, u=>{
+      if (!u.completed[file] || !u.completed[file][level]) return false;
+      let data=u.completed[file][level];
+      if (data.score===0) return false;
+      return `<span style="font-size:18px;font-weight:bold;">${u.name}:</span> &nbsp; ${data.score}% in ${data.time/1000} seconds.`;//FIX LATER
       //add colors later
     });
 }
@@ -121,18 +120,26 @@ Leaderboard.onclick = function() {
     users.sort((u1, u2) => {
         return (u2.avg * (u2.score+u2.games)) - (u1.avg * (u1.games+u1.score));
     });
-    makeLeaderboard(users, user=>{
+    makeLeaderboard(users, u=>{
       let avgcolor = 'green';
       let gamescolor = 'green';
       let scorecolor = 'green';
-      if (user.avg>99) avgcolor='blue';
-      if (user.avg<50)avgcolor='orange';
-      if (user.avg<10)avgcolor='red';
-      if (user.games>6)gamescolor='blue';
-      if (user.games<4)gamescolor='orange';
-      if (user.score>690)scorecolor='blue';
-      if (user.score<300)scorecolor='orange';
-      if (user.score<20)scorecolor='red';
-      return `<span style="font-size:18px;font-weight:bold;">${user.name}:</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(user.avg)}% average</span>, &nbsp;<span style="color:${gamescolor};">${user.games} games played</span>, &nbsp;<span style="color:${scorecolor};">total score of ${user.score}</span>.`;
+      let usercolor = 'white';
+      let ftsize=18;
+      let ftweight='700';
+      if (u.avg>99) avgcolor='blue';
+      if (u.avg<50) avgcolor='orange';
+      if (u.avg<10) avgcolor='red';
+      if (u.games>6) gamescolor='blue';
+      if (u.games<4) gamescolor='orange';
+      if (u.score>690) scorecolor='blue';
+      if (u.score<300) scorecolor='orange';
+      if (u.score<20) scorecolor='red';
+      if (u.name===user.name) {
+        usercolor='green';
+        ftsize=20;
+        ftweight='800';
+      }
+      return `<span style="font-size:${ftsize}px;font-weight:${ftweight};color:${usercolor};">${u.name}:</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(u.avg)}% average</span>, &nbsp;<span style="color:${gamescolor};">${u.games} games played</span>, &nbsp;<span style="color:${scorecolor};">total score of ${u.score}</span>.`;
     });
 }

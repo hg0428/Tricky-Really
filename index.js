@@ -1,4 +1,4 @@
-var Random = {
+ var Random = {
   random: Math.random,
   range: (min, max) => (Math.random() * (max - min) + min),
   choice: (choices) => {
@@ -205,7 +205,9 @@ io.on('connection', async (socket) => {
     } else {
       let old = user.completed[user.currentGame.file][user.currentGame.level];
       if (score>old.score) user.completed[user.currentGame.file][user.currentGame.level].score=score;
-      if (time<old.time)user.completed[user.currentGame.file][user.currentGame.level].time=time;
+      if (time<old.time && score>=old.score) {
+        user.completed[user.currentGame.file][user.currentGame.level].time=time;
+      }
       if (moves<old.moves)user.completed[user.currentGame.file][user.currentGame.level].moves=moves;
     }
     user.currentGame = false; 
