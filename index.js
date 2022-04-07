@@ -46,6 +46,10 @@ db.list().then(keys => {
 var Games = {
   'games/spelling.js': {
     name:'Spelling',
+    'switch': {
+      avgTime:3000,
+      moves:3
+    },
     'pop':{
       avgTime: 2500,
       moves:3
@@ -60,15 +64,18 @@ var Games = {
     }, 
     'backwards':{
       avgTime: 5500,
-      moves:4
+      moves:4,
+      requiredCompletes:['switch', 'pop']
     }, 
     'replaceAll':{
       avgTime: 15000,
-      moves:3
+      moves:3,
+      requiredCompletes:['switch', 'pop', 'backwards']
     }, 
     'Keymap':{
       avgTime: 100000,
-      moves:3
+      moves:3,
+      requiredCompletes:['switch', 'pop', 'backwards']
     }
   },
   'games/enemy.js':{
@@ -133,7 +140,7 @@ io.on('connection', async (socket) => {
       return socket.emit('level', user.currentGame)
     }
     let game;
-    let tries=0
+    let tries = 0;
     while (tries < 15) {
       let file = Random.choice(Object.keys(Games));
       let levels = Object.keys(Games[file]);

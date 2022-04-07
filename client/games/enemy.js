@@ -124,12 +124,12 @@ let gameLoop = function(timestamp) {
     player.x += elapsed;
   } if (KEYS.pressedKeys.has('v') && LEVEL === 'vinde') {
     game.complete();
-    socket.emit('complete', 100, game.time, game.moves);
+    game.socket.emit('complete', 100, game.time, game.moves);
     document.body.innerHTML = `<div class="center" style="color:green"><center><h1>You WON!!!</h1><h2>Completed in ${game.time/1000} seconds!</h2></center><br/><center><button class="extraLarge" onclick="location.reload();">Continue</button></center></div>`;
   }
   if (player.left > enemy.left && player.left < enemy.right && player.top > enemy.top && player.top < enemy.bottom) {
     game.complete();
-    socket.emit('complete', 0, game.time, game.moves);
+    game.socket.emit('complete', 0, game.time, game.moves);
     document.body.innerHTML = `<div class="center" style="color:red"><center><h1>You died!</h1><h2>I guess its over</h2></center><br/><center><button class="extraLarge" onclick="location.reload();">Continue</button></center></div>`;
   }
   for (t of Things) {

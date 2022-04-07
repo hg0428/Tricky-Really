@@ -1,4 +1,5 @@
-var LEVEL, socket, ready, user;
+var LEVEL, ready, user;
+let socket;
 const START = document.getElementById('START');
 const Select = document.getElementById('select');
 const Leaderboard = document.getElementById('leaderboard');
@@ -6,19 +7,23 @@ const status = document.getElementById('status');
 var Games, Users;
 
 
-function onload() {
-    if (!loggedin) return;
-    socket = io();
-    socket.on('Data', (userData, games, users) => {
-        status.innerHTML = 'Ready!';
-        user = userData;
-        Games = games;
-        Users = users;
-        ready = true;
-    })
-    socket.on('level', (game) => {
-        loadLevel(game.file, game.level);
-    });
+function initSocket() {
+    if (!loggedin) return null;
+    try {
+      socket = io();
+      return socket;
+    } finally {
+        socket.on('Data', (userData, games, users) => {
+            status.innerHTML = 'Ready!';
+            user = userData;
+            Games = games;
+            Users = users;
+            ready = true;
+        })
+        socket.on('level', (game) => {
+            loadLevel(game.file, game.level);
+        });
+    }
 }
 
 function Reset() {

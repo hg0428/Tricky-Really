@@ -1,6 +1,15 @@
 document.body.innerHTML = ``;
 let game = new Game();
+let switchMode = Random.choice([['ice', 'nice', 2], ['cook', 'nook', 3]]);
 const words = {
+    'switch': {
+      word: switchMode[0],
+      trick: {
+        type:'switch',
+        what: [switchMode[1], switchMode[2]]
+      },
+      riddle: 'Watch closely'
+    },
     'pop': {
         word: 'pop',
         trick: {
@@ -89,19 +98,20 @@ const words = {
 
 let word = words[LEVEL];
 
-document.body.innerHTML += `<center><h1>Spelling Game!</h1><h2>Spell <span class="word">${word.word}</span></h2><br/><br/><input id="box" type="text" placeholder="Spell ${word.word}"/><br/><button id="submit">Submit</button><br/><h3>Riddle: ${word.riddle}</h3></center>`;
+document.body.innerHTML += `<center><h1>Spelling Game!</h1><h2>Spell <span class="word" id="spelling-word">${word.word}</span></h2><br/><br/><input id="box" type="text" placeholder="Spell ${word.word}"/><br/><button id="submit">Submit</button><br/><h3>Riddle: ${word.riddle}</h3></center>`;
 let textbox = document.getElementById('box');
 let submitBtn = document.getElementById('submit');
+let spellingWord = document.getElementById('spelling-word');
 game.start();
 
 let submit = function() {
     if (!game.running)return;
     game.complete();
     if (word.word === textbox.value) {
-        socket.emit('complete', 100, game.time, game.moves);
+        game.socket.emit('complete', 100, game.time, game.moves);
         document.body.innerHTML = `<div class="center" style="color:green"><center><h1>Correct!</h1><h2>Completed in ${game.time/1000} seconds using ${game.moves} moves.</h2></center><br/><center><button class="extraLarge" onclick="location.reload();">Continue</button></center></div>`;
     } else {
-        socket.emit('complete', 0, game.time, game.moves);
+        game.socket.emit('complete', 0, game.time, game.moves);
         document.body.innerHTML = `<div class="center" style="color:red"><center><h1>Incorrect!</h1></center><br/><center><button class="extraLarge" onclick="location.reload();">Continue</button></center></div>`;
     }
 }
@@ -132,6 +142,17 @@ textbox.oninput = function() {
                 break;
             }
         }
+    } else if (word.trick.type === 'switch') {
+      if (textbox.value.length>=word.trick.what[1]) {
+        if (!word.old) word.old=word.word;
+        word.word = word.trick.what[0];
+        textbox.placeholder = word.word;
+        spellingWord.innerHTML = word.word;
+      } else if (textbox.value.length<word.trick.what[1] && word.old) {
+        word.word=word.old;
+        textbox.placeholder = word.word;
+        spellingWord.innerHTML = word.word;
+      }
     }
 }
 submitBtn.onclick = submit;

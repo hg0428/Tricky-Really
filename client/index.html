@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width">
     <title>Tricky Really</title>
     <script src="/helpers/interface.js"></script>
-    <script src="/helpers/game.js"></script>
     <link href="/style.css" rel="stylesheet" type="text/css" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -16,7 +15,7 @@
   </head>
   
   <body onload="onload()">
-      <!--<a href='javascript:(function () {var script=document.createElement("script");script.src="//cdn.jsdelivr.net/npm/eruda";document.body.appendChild(script); script.onload = function () { eruda.init() } })();'>SCIRPT</a>-->
+      <a href='javascript:(function () {var script=document.createElement("script");script.src="//cdn.jsdelivr.net/npm/eruda";document.body.appendChild(script); script.onload = function () { eruda.init() } })();'>SCIRPT</a>
 		<div>
       
       {% if not loggedin %}
@@ -43,5 +42,6 @@
       var loggedin={{loggedin}};
     </script>
     <script src="script.js"></script>
+    <script src="/helpers/game.js"></script>
   </body>
 </html>
