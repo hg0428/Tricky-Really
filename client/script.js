@@ -84,7 +84,7 @@ Select.onclick = function() {
             } else {
                 data = `<span style="color:red;">NOT COMPLETED. </span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`;
             }
-            g += `<li onclick="loadLevel('${game}','${level}')">${level}</li><span class="scores">${data}</span>`;
+            g += `<li onclick="loadLevel('${game}','${level}')" class="">${level}</li><span class="scores">${data}</span>`;
         }
         g += '</ul>';
         g += '</div>';

@@ -46,33 +46,33 @@ db.list().then(keys => {
 var Games = {
   'games/spelling.js': {
     name:'Spelling',
-    'switch': {
+    'Switch it up': {
       avgTime:3000,
       moves:3
     },
-    'pop':{
+    'Spell pop':{
       avgTime: 2500,
       moves:3
     }, 
-    'explode':{
+    'Explode':{
       avgTime: 3500,
       moves:7
     }, 
-    'replace':{
+    'Repl.itace':{
       avgTime: 4000,
       moves:7
     }, 
-    'backwards':{
+    'Backwards?':{
       avgTime: 5500,
       moves:4,
       requiredCompletes:['switch', 'pop']
     }, 
-    'replaceAll':{
+    'Say hi!':{
       avgTime: 15000,
       moves:3,
       requiredCompletes:['switch', 'pop', 'backwards']
     }, 
-    'Keymap':{
+    'My keyboard broke?':{
       avgTime: 100000,
       moves:3,
       requiredCompletes:['switch', 'pop', 'backwards']
@@ -80,9 +80,9 @@ var Games = {
   },
   'games/enemy.js':{
     name:'Platformer',
-   'vinde':{
-     avgTime: 1000,
-   } 
+    'vinde':{
+       avgTime: 1000,
+     },
   }
 }
 console.log('Getting Ready...')
