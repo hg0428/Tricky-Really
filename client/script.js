@@ -69,22 +69,29 @@ Select.onclick = function() {
         g += '<ul class="game-levels">';
         for (level in Games[game]) {
             if (level == 'name') continue;
-            let data = '';
+            let gameData = Games[game][level];
+            let scoredata = '';
+            let li='';
             if (completed[game] && completed[game][level]) {
                 let comp = completed[game][level];
-                let gameData = Games[game][level];
                 let color = 'green';
                 let timecolor = 'green';
                 if (comp.score == 100) color = 'blue';
                 if (comp.score < 50) color = 'orange';
                 if (comp.score < 10) color = 'red';
                 if (comp.time > gameData.avgTime) timecolor = 'orange';
-                if (Math.floor(comp.time / 1000) + 1 < Math.floor(gameData.time / 1000)) timecolor = 'blue';
-                data = `<span style="color:${color};">${comp.score}%  <span style="color:${timecolor};">in ${Math.floor(comp.time/1000)}s. </span></span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`
+                if (Math.floor(comp.time / 1000) + 1 < Math.floor(gameData.avgTime / 1000)) timecolor = 'blue';
+              //&#128274; lock
+                scoredata = `<span style="color:${color};">${comp.score}%  <span style="color:${timecolor};">in ${Math.floor(comp.time/1000)}s. </span></span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`
             } else {
-                data = `<span style="color:red;">NOT COMPLETED. </span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`;
+                scoredata = `<span style="color:red;">NOT COMPLETED. </span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`;
             }
-            g += `<li onclick="loadLevel('${game}','${level}')" class="">${level}</li><span class="scores">${data}</span>`;
+            if (gameData.locked) {
+              li = `<li class="locked">${level}&#128274;</li>`
+            } else {
+              li=`<li onclick="loadLevel('${game}','${level}')" class="">${level}</li>`
+            }
+            g += `${li}<span class="scores">${scoredata}</span>`;
         }
         g += '</ul>';
         g += '</div>';
@@ -140,7 +147,7 @@ Leaderboard.onclick = function() {
       if (u.score>690) scorecolor='blue';
       if (u.score<300) scorecolor='orange';
       if (u.score<20) scorecolor='red';
-      if (u.name===user.name) {
+      if (u.name === user.name) {
         usercolor='green';
         ftsize=20;
         ftweight='800';

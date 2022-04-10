@@ -37,6 +37,12 @@ body {
 .game-levels li:hover {
   text-decoration:underline;
 }
+.game-levels li.locked {
+  color:rgb(40, 100, 120);
+}
+.game-levels li.locked:hover {
+  text-decoration:none;
+}
 .scores {
   display: inline-block;
 }
@@ -56,6 +62,11 @@ body {
   padding-right: 0.8em;
 }
 #select, #leaderboard, #username {
+  -webkit-user-drag: none; 
+  -khtml-user-drag: none; 
+  -moz-user-drag: none; 
+  -o-user-drag: none; 
+  user-drag: none; 
   margin: 0.6em;
   margin-top: 0.5em;
   transition: .2s;
@@ -92,6 +103,11 @@ body {
   visibility: visible;
 }
 button, input[type=button],input[type=file]::file-selector-button {
+  -webkit-user-drag: none; 
+  -khtml-user-drag: none; 
+  -moz-user-drag: none; 
+  -o-user-drag: none; 
+  user-drag: none; 
 	font-weight: bold;
 	-webkit-appearance: none;
 	appearance: none;
@@ -109,11 +125,13 @@ button, input[type=button],input[type=file]::file-selector-button {
   text-align: center;
 }
 button:hover, input[type=button]:hover, input[type=file]::file-selector-button:hover {
+  cursor: pointer;
 	-webkit-appearance: none;
 	appearance: none;
 	transform: scale(1.02);
 }
 button:active, input[type=button]:active,input[type=file]::file-selector-button:active{
+  cursor: pointer;
 	transform: scale(0.97);
 }
 .center {
@@ -153,7 +171,7 @@ input {
   padding: 5px;
 }
 .continue {
-  height:110px;
-  width:315px;
+  height:120px;
+  width:320px;
   padding:0;
 }

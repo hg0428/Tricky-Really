@@ -48,40 +48,46 @@ var Games = {
     name:'Spelling',
     'Switch it up': {
       avgTime:3000,
-      moves:3
+      moves:3,
+      requiredCompletes:[]
     },
     'Spell pop':{
       avgTime: 2500,
-      moves:3
+      moves:3,
+      requiredCompletes:[]
     }, 
     'Explode':{
       avgTime: 3500,
-      moves:7
+      moves:7,
+      requiredCompletes:[]
     }, 
     'Repl.itace':{
       avgTime: 4000,
-      moves:7
+      moves:7,
+      requiredCompletes:[]
     }, 
     'Backwards?':{
       avgTime: 5500,
       moves:4,
-      requiredCompletes:['switch', 'pop']
+      requiredCompletes:['Switch it up', 'Spell pop']
     }, 
     'Say hi!':{
       avgTime: 15000,
       moves:3,
-      requiredCompletes:['switch', 'pop', 'backwards']
+      requiredCompletes: ['Switch it up', 'Spell pop', 'Backwards?']
     }, 
     'My keyboard broke?':{
       avgTime: 100000,
       moves:3,
-      requiredCompletes:['switch', 'pop', 'backwards']
+      requiredCompletes: ['Switch it up', 'Spell pop', 'Backwards?']
     }
   },
   'games/enemy.js':{
     name:'Platformer',
     'vinde':{
-       avgTime: 1000,
+      avgTime: 1000,
+      moves:0,
+      requiredCompletes:[]
      },
   }
 }
@@ -123,6 +129,7 @@ io.on('connection', async (socket) => {
   let userID = socket.handshake.headers['x-replit-user-id'];
   let user = await db.get(userID);
   let allUsers = {}
+  let unlockedGames = {};
   for (uID in USERS) {
     let u = USERS[uID];
     allUsers[u.name] = {
@@ -133,7 +140,28 @@ io.on('connection', async (socket) => {
       completed:u.completed
     };
   }
-	socket.emit('Data', user, Games, allUsers);
+  for (file in Games) {
+    unlockedGames[file]={};
+    for (level in Games[file]) {
+      if (level==='name') {
+        unlockedGames[file][level]=Games[file][level];
+        continue;
+      }
+      let locked = false;
+      for (l of Games[file][level].requiredCompletes) {
+        if (!user.completed[file] || !user.completed[file][l] || !user.completed[file][l].score>0) {
+              locked = true;
+          }
+        }
+      unlockedGames[file][level] = {
+        avgTime:Games[file][level].avgTime,
+        moves:Games[file][level].moves,
+        locked:locked,
+        required:Games[file][level].requiredCompletes
+      }
+    }
+  }
+	socket.emit('Data', user, unlockedGames, allUsers);
   socket.on('get', () => {
     console.log(`@${user.name} requested a game.`);
     if (user.currentGame) {
