@@ -40,12 +40,10 @@ const words = {
     word: 'replace',
     tricks: {
       'add': {
-        'add': {
           type: 'add',
           what: [
             ['repl', 'it']
           ]
-        }
       }
     },
     riddle: "There's a trick, can you see it? Type it right and you get cheated."
@@ -67,7 +65,7 @@ const words = {
         what: ['h', 'hi']
       }
     },
-    riddle: 'What changes can be reversed only by the new and the old united.'
+    riddle: 'Type a letter it becomes two, type it again and the two become one.'
   },
   'My keyboard broke?': {
     word: Random.choice(['simple', 'so-easy', 'keyboard', 'broken']),

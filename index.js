@@ -1,4 +1,4 @@
- var Random = {
+var Random = {
   random: Math.random,
   range: (min, max) => (Math.random() * (max - min) + min),
   choice: (choices) => {
