@@ -1,4 +1,23 @@
- var Random = {
+/*
+-------TODO-------
++ Finish spelling levels.
++ Add overall leaderboard sorting
++ Style leaderboard.
++ Add full game credits list/animation
++ Always On + Boost
++ Add multi-level support for platformers
++ Make the platformer longer
++ Add more platformer levels
++ Mobile support for platfomer
++ Sort levels
++ Continue starts the next level; add button to go to home screen
++ Useless functions
++ Clicker section
++ Math section
++ Profiles with /@username
++ 
+*/
+var Random = {
   random: Math.random,
   range: (min, max) => (Math.random() * (max - min) + min),
   choice: (choices) => {
@@ -74,12 +93,22 @@ var Games = {
     'Say hi!':{
       avgTime: 15000,
       moves:3,
-      requiredCompletes: ['Switch it up', 'Spell pop', 'Backwards?']
+      requiredCompletes: ['Backwards?']
     }, 
     'My keyboard broke?':{
       avgTime: 100000,
       moves:3,
-      requiredCompletes: ['Switch it up', 'Spell pop', 'Backwards?']
+      requiredCompletes: []
+    },
+    'QWERTY': {
+      avgTime:10000,
+      moves:10,
+      requiredCompletes: ['My keyboard broke?']
+    },
+    'Try to say hello': {
+      avgTime: 15000,
+      moves:5,
+      requiredCompletes: ['Say hi!']
     }
   },
   'games/enemy.js':{
@@ -141,16 +170,17 @@ io.on('connection', async (socket) => {
     };
   }
   for (file in Games) {
+    let locked=false;
     unlockedGames[file]={};
     for (level in Games[file]) {
       if (level==='name') {
         unlockedGames[file][level]=Games[file][level];
         continue;
       }
-      let locked = false;
       for (l of Games[file][level].requiredCompletes) {
         if (!user.completed[file] || !user.completed[file][l] || !user.completed[file][l].score>0) {
               locked = true;
+              break;
           }
         }
       unlockedGames[file][level] = {
@@ -176,7 +206,14 @@ io.on('connection', async (socket) => {
       if (index > -1) {
         levels.splice(index, 1);
       }
-      let level = Random.choice(levels);
+      let level;
+      if (!user.completed[file]) {
+        level = levels[0];
+      } else {
+        levelnum = Object.keys(user.completed[file]).length;
+        level = levels[levelnum]
+        if (levelnum>=levels.length) level = Random.choice(levels);
+      }
       game = {
         file: file,
         level: level,

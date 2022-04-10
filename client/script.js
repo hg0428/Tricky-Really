@@ -87,7 +87,7 @@ Select.onclick = function() {
                 scoredata = `<span style="color:red;">NOT COMPLETED. </span><a onclick="levelLeaders('${game}', '${level}')" class="leaderboard">Leaderboard</a>`;
             }
             if (gameData.locked) {
-              li = `<li class="locked">${level}&#128274;</li>`
+              li = `<li class="locked tooltip">${level}&#128274;<span class="tooltiptext">Locked</span></li>`
             } else {
               li=`<li onclick="loadLevel('${game}','${level}')" class="">${level}</li>`
             }
