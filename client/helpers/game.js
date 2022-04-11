@@ -3,10 +3,13 @@ function onload() {
   socket = initSocket();
 }
 class Game {
-  constructor() {
+  constructor(file, level) {
+    this.file = file;
+    this.level = level;
     this.startTime = null;
     this.running = false;
     this.moves = 0;
+    this.score = 0;
     this.socket = socket;
   }
   start() {
@@ -18,6 +21,30 @@ class Game {
       this.running = false;
       this.endTime = Date.now();
     }
+  } Continue(msg, color, h2, game) {
+    this.socket.emit('complete', this.score, this.time, this.moves);
+    if (h2) h2 = `<h2>${h2}</h2>`;
+    document.body.innerHTML = `<div class="center" style="color:${color}"><center><h1>${msg}</h1>${h2}</center><br/><center><button class="extraLarge continue" id="continue" onclick="location.reload();">CONTINUE</button><br/><button onclick="" class="large" id="next-btn">Next Level</button><button onclick="" class="large" id="retry-btn">Retry Level</button></center></div>`;
+    let nextBtn = document.getElementById('next-btn');
+    let retryBtn = document.getElementById('retry-btn');
+    let file = this.file;
+    let level = this.level;
+    nextBtn.onclick = () => {
+      socket.emit("next", file);
+      location.reload();
+    }
+    retryBtn.onclick = () => {
+      socket.emit("next", file, level);
+      location.reload();
+    }
+    document.addEventListener('keyup', (e) => {
+      let code = e.keyCode || e.which || e.code || e.charCode;
+      if (code === 13) {
+        if (!game.running) {
+          location.reload();
+        }
+      }
+    });
   }
   get time() {
     let time = this.endTime || Date.now();

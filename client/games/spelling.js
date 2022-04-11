@@ -1,5 +1,5 @@
 document.body.innerHTML = ``;
-let game = new Game();
+let game = new Game('games/spelling.js', LEVEL);
 let switchMode = Random.choice([['ice', 'nice', 2], ['cook', 'nook', 3]]);
 const words = {
   'Switch it up': {
@@ -51,8 +51,7 @@ const words = {
   'Backwards?': {
     word: Random.choice(['what', 'random', 'superlongword', 'backwards']),
     tricks: {
-      'backwards': {
-      }
+      'backwards': {}
     },
     riddle: 'Backwards you type, backpace you reverse.',
     credits: ['@hg0428']
@@ -122,7 +121,7 @@ const words = {
   'Try to say hello': {
     word: 'hi',
     tricks: {
-      'backwards':{type:'backwards'},
+      'backwards':{},
       'add':{
         what:[['h', 'ello']]
       }
@@ -132,8 +131,16 @@ const words = {
   },
   'REPLit': {
     word:'replit',
-    //FINISH LATER
-    credits: ['@CuriousFox14', '@hg0428']
+    tricks: {
+      add:{what:[['replit', ' is great'], ['repl it', ' is great']]},
+      keymap:{
+        what: {
+          'i':' i'
+        }
+      }
+    },
+    credits: ['@CuriousFox14', '@hg0428'],
+    riddle: 'Watch out for the tricks!'
   }
 }
 
@@ -155,9 +162,9 @@ game.start();
 let submit = function() {
   if (!game.running) return;
   game.complete();
-  if (word.word === textbox.value) {
-    game.socket.emit('complete', 100, game.time, game.moves);
-    document.body.innerHTML = `<div class="center" style="color:green"><center><h1>Correct!</h1><h2>Completed in ${game.time / 1000} seconds using ${game.moves} moves.</h2></center><br/><center><button class="extraLarge continue" onclick="location.reload();">CONTINUE</button></center></div>`;
+  if (word.word === textbox.value || word.word === textbox.value.trim()) {
+    game.score=100;
+    game.Continue("Correct!", 'green', `Completed in ${game.time / 1000} seconds using ${game.moves} moves.`, game)
   } else {
     game.socket.emit('complete', 0, game.time, game.moves);
     document.body.innerHTML = `<div class="center" style="color:red"><center><h1>Incorrect!</h1></center><br/><center><button class="extraLarge continue" onclick="location.reload();">CONTINUE</button></center></div>`;
@@ -227,6 +234,5 @@ document.addEventListener('keyup', (e) => {
   let code = e.keyCode || e.which || e.code || e.charCode;
   if (code === 13) {
     if (game.running) submit();
-    else location.reload();
   }
-})
+});

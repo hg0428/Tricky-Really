@@ -1,11 +1,11 @@
-document.body.innerHTML='<h3>You have to win this. Did you know that win is "vinde" in Danish? So, I guess get a V for vinde.</h3>';
+document.body.innerHTML = '<h3>You have to win this. Did you know that win is "vinde" in Danish? So, I guess get a V for vinde.</h3><input id="hidden"/>';
 let head = document.getElementsByTagName('head')[0];
 let style = document.createElement('link');
 style.href = "/css/game.css";
 style.type = 'text/css';
 style.rel = 'stylesheet';
 head.append(style);
-let game = new Game();
+let game = new Game('games/enemy.js', LEVEL);
 console.error = function(...args) {
   document.write(args.join(' '));
 }
@@ -105,7 +105,6 @@ let gameLoop = function(timestamp) {
   ctx.fillStyle = "lightblue";
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  console.log(enemy.x, enemy.y, player.x, player.y);
   if (KEYS.pressedKeys.has(' ')) {
     game.moves++;
     if (onGround!==false) {
@@ -123,6 +122,7 @@ let gameLoop = function(timestamp) {
     game.moves++;
     player.x += elapsed;
   } if (KEYS.pressedKeys.has('v') && LEVEL === 'vinde') {
+    game.score=100;
     game.complete();
     game.socket.emit('complete', 100, game.time, game.moves);
     document.body.innerHTML = `<div class="center" style="color:green"><center><h1>You WON!!!</h1><h2>Completed in ${game.time/1000} seconds!</h2></center><br/><center><button class="extraLarge continue" onclick="location.reload();">Continue</button></center></div>`;
@@ -168,9 +168,16 @@ img.onload = function() {
     ctx.closePath();
     ctx.fill();
   }
-  ground = new Thing('ground', 2000, 200, 100, canvas.height/2-100, 'green', image);
+  ground = new Thing('ground', 6000, 200, 100, canvas.height/2-100, 'green', image);
   enemy = new Thing('enemy', 50, 80, 200, 0, 'grey', triangle);
   player = new Thing('player', 70, 70, 0, 0, 'green', rect);
   game.start();
   window.requestAnimationFrame(gameLoop);
 }
+
+document.addEventListener('keyup', (e) => {
+  let code = e.keyCode || e.which || e.code || e.charCode;
+  if (code === 13) {
+    if (!game.running) location.reload();
+  }
+})
