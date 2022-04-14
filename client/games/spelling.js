@@ -11,7 +11,7 @@ const words = {
     },
     riddle: 'Watch closely',
     credits: ['@hg0428']
-  },
+  }, 
   'Spell pop': {
     word: 'pop',
     tricks: {
