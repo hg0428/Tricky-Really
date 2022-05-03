@@ -11,7 +11,7 @@ const words = {
     },
     riddle: 'Watch closely',
     credits: ['@hg0428']
-  }, 
+  },
   'Spell pop': {
     word: 'pop',
     tricks: {
@@ -40,9 +40,9 @@ const words = {
     word: 'replace',
     tricks: {
       'add': {
-          what: [
-            ['repl', 'it']
-          ]
+        what: [
+          ['repl', 'it']
+        ]
       }
     },
     riddle: "There's a trick, can you see it? Type it right and you get cheated.",
@@ -94,24 +94,24 @@ const words = {
     credits: ['@hg0428']
   },
   'QWERTY': {
-    word:'qwertyuiop',
+    word: 'qwertyuiop',
     tricks: {
-      'keymap':{
+      'keymap': {
         what: {
-          'q':'a',
-          'w':'s',
-          'e':'d',
-          'r':'f',
-          't':'g',
-          'y':'h',
-          'u':'j',
-          'i':'k',
-          'o':'l',
-          'p':';',
-          'z':'x',
-          'c':'v',
-          'b':'n',
-          'm':','
+          'q': 'a',
+          'w': 's',
+          'e': 'd',
+          'r': 'f',
+          't': 'g',
+          'y': 'h',
+          'u': 'j',
+          'i': 'k',
+          'o': 'l',
+          'p': ';',
+          'z': 'x',
+          'c': 'v',
+          'b': 'n',
+          'm': ','
         }
       }
     },
@@ -121,21 +121,21 @@ const words = {
   'Try to say hello': {
     word: 'hi',
     tricks: {
-      'backwards':{},
-      'add':{
-        what:[['h', 'ello']]
+      'backwards': {},
+      'add': {
+        what: [['h', 'ello']]
       }
     },
     riddle: "You're on your own this time. 😀",
     credits: ['@hg0428']
   },
   'REPLit': {
-    word:'replit',
+    word: 'replit',
     tricks: {
-      add:{what:[['replit', ' is great'], ['repl it', ' is great']]},
-      keymap:{
+      add: { what: [['replit', ' is great'], ['repl it', ' is great']] },
+      keymap: {
         what: {
-          'i':' i'
+          'i': ' i'
         }
       }
     },
@@ -151,7 +151,7 @@ for (i in credits) {
   credits[i] = `<a href="https://replit.com/${c}">${c}</a>`
 }
 credits = credits.join(', ');
-document.body.innerHTML += `<center><h1>Spelling Game!</h1><h2>Spell <span class="word" id="spelling-word">${word.word}</span></h2><br/><br/><input id="box" type="text" placeholder="Spell ${word.word}"/><br/><button id="submit">Submit</button><br/><h3>Riddle: ${word.riddle}</h3></center><span class="credits">Credits: ${credits}</span>`;
+document.body.innerHTML += `<center><h1>Spelling Game!</h1><h2>Spell <span class="word" id="spelling-word">${word.word}</span></h2><br/><br/><input id="box" type="text" placeholder="Spell ${word.word}" onpaste="return false;" ondrop="return false;" autocomplete="off"/><br/><button id="submit">Submit</button><br/><h3>Riddle: ${word.riddle}</h3></center><span class="credits">Credits: ${credits}</span>`;
 let textbox = document.getElementById('box');
 textbox.focus();
 textbox.select();
@@ -163,29 +163,28 @@ let submit = function() {
   if (!game.running) return;
   game.complete();
   if (word.word === textbox.value || word.word === textbox.value.trim()) {
-    game.score=100;
+    game.score = 100;
     game.Continue("Correct!", 'green', `Completed in ${game.time / 1000} seconds using ${game.moves} moves.`, game)
   } else {
-    game.socket.emit('complete', 0, game.time, game.moves);
     document.body.innerHTML = `<div class="center" style="color:red"><center><h1>Incorrect!</h1></center><br/><center><button class="extraLarge continue" onclick="location.reload();">CONTINUE</button></center></div>`;
   }
 }
 textbox.oninput = function() {
-  textbox.value=textbox.value.toLowerCase();
+  textbox.value = textbox.value.toLowerCase();
   game.moves++;
   if (word.tricks['backwards']) {
     let trick = word.tricks['backwards'];
-    if (!trick.val){
-      trick.val="";
-      trick.len=0
+    if (!trick.val) {
+      trick.val = "";
+      trick.len = 0
     }
-    if (textbox.value.length>=trick.len) {
+    if (textbox.value.length >= trick.len) {
       textbox.value = textbox.value.slice(-1) + textbox.value.slice(0, -1);
     } else {
-      textbox.value=trick.val.slice(1);
+      textbox.value = trick.val.slice(1);
     }
     trick.val = textbox.value;
-    trick.len=trick.val.length;
+    trick.len = trick.val.length;
   } if (word.tricks['add']) {
     let trick = word.tricks['add'];
     for (i of trick.what) {

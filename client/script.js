@@ -1,10 +1,11 @@
 var LEVEL, ready, user;
 let socket;
+var MusicOn = false;
 const START = document.getElementById('START');
 const Select = document.getElementById('select');
 const Leaderboard = document.getElementById('leaderboard');
 const status = document.getElementById('status');
-var Games, Users;
+var Games, Leaderboards;
 
 function initSocket() {
   if (!loggedin) return null;
@@ -12,12 +13,12 @@ function initSocket() {
     socket = io();
     return socket;
   } finally {
-    socket.on('Data', (userData, games, users) => {
+    socket.on('Data', (userData, games, leaderboards) => {
       status.innerHTML = 'Ready!';
+      Leaderboards = leaderboards;
       user = userData;
       Games = games;
       ready = true;
-      Users = users;
     });
     socket.on('level', game => {
       loadLevel(game.file, game.level);
@@ -47,10 +48,6 @@ function loadLevel(file, level) {
   } else if (!socket) {
     return alert('Waiting for page to load.');
   }
-  const music = new Audio('bgm.wav');
-  music.volume = 0.3;
-  music.loop = true;
-  music.play();
   LEVEL = level;
   let myScript = document.createElement('script');
   myScript.setAttribute('src', file);
@@ -65,9 +62,9 @@ Select.onclick = function() {
     let g = '<div class="game">';
     g += `<h2 class="game-name">${Games[game].name}</h2>`;
     g += '<ul class="game-levels">';
-    for (level in Games[game]) {
+    for (level in Games[game].levels) {
       if (level == 'name') continue;
-      let gameData = Games[game][level];
+      let gameData = Games[game].levels[level];
       let scoredata = '';
       let li = '';
       if (completed[game] && completed[game][level]) {
@@ -117,24 +114,11 @@ function makeLeaderboard(users, gen) {
   document.body.innerHTML = code;
 }
 function levelLeaders(file, level) {
-  let users = Object.values(Users);
-  users.sort((u1, u2) => {
-    if (!(u1.completed[file] && u1.completed[file][level])) {
-      return 999;
-    } else if (!(u2.completed[file] && u2.completed[file][level])) {
-      return -999;
-    } else {
-      return (
-        u2.completed[file][level].score -
-        u2.completed[file][level].time -
-        (u1.completed[file][level].score - u1.completed[file][level].time)
-      );
-    }
-  });
+  users = Leaderboards[file][level]
   makeLeaderboard(users, u => {
     if (!u.completed[file] || !u.completed[file][level]) return false;
     let data = u.completed[file][level];
-    let gameData = Games[file][level];
+    let gameData = Games[file].levels[level];
     if (data.score === 0) return false;
     let userclass = '';
     let scorecolor = 'green';
@@ -160,12 +144,11 @@ function levelLeaders(file, level) {
 }
 
 Leaderboard.onclick = function() {
-  if (!Users) console.log('Waiting for server...');
-  let users = Object.values(Users);
-  users.sort((u1, u2) => {
-    return u2.avg * (u2.score + u2.games) - u1.avg * (u1.games + u1.score);
-  });
-  makeLeaderboard(users, u => {
+  if (!Leaderboards) {
+    console.log('Waiting for server...');
+    return false;
+  }
+  makeLeaderboard(Leaderboards.overall, u => {
     let avgcolor = 'green';
     let gamescolor = 'green';
     let scorecolor = 'green';
@@ -192,10 +175,21 @@ Leaderboard.onclick = function() {
       }</span>.`;
   });
 };
+function playMusic() {
+  if (!MusicOn) {
+    const music = new Audio('bgm.wav');
+    music.volume = 0.1;
+    music.loop = true;
+    music.play();
+    MusicOn = true;
+  }
+}
 window.oncontextmenu = e => {
+  playMusic();
   e.preventDefault();
 };
 document.addEventListener('keydown', function(event) {
+  playMusic()
   var key = event.key || event.keyCode;
   if (key == 17) {
     return false;
@@ -206,3 +200,5 @@ document.addEventListener('keydown', function(event) {
     return false;
   }
 });
+document.addEventListener('click', playMusic);
+document.addEventListener('touchstart', playMusic);

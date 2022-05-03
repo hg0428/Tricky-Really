@@ -244,3 +244,18 @@ input {
   font-size:1.25rem;
   color:green;
 }
+
+@keyframes rotateImg {
+  0% {transform: rotate(-15deg);}
+  100% {transform: rotate(15deg);}
+}
+
+#logoImg { /*Remove this if you want, I think it looks cool lol*/
+  /*Yes it does
+  I changed the svg to make it look fine.
+  Thanks for adding it.
+  */
+  width: 60%;
+  min-width:350px;
+  animation: rotateImg 3s alternate infinite;
+}

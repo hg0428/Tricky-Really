@@ -1,6 +1,7 @@
 {
   "name": "Tricky-Really-Dev",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,6 +16,7 @@
     "axios": "^0.26.1",
     "cors": "^2.8.5",
     "express": "^4.17.3",
+    "node-fetch": "^3.2.4",
     "nunjucks": "^3.2.3",
     "rate-limiter-flexible": "^2.3.6",
     "socket.io": "^4.4.1"

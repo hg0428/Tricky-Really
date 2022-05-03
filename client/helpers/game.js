@@ -20,9 +20,9 @@ class Game {
     if (this.running) {
       this.running = false;
       this.endTime = Date.now();
+      this.socket.emit('complete', this.score, this.time, this.moves);
     }
   } Continue(msg, color, h2, game) {
-    this.socket.emit('complete', this.score, this.time, this.moves);
     if (h2) h2 = `<h2>${h2}</h2>`;
     document.body.innerHTML = `<div class="center" style="color:${color}"><center><h1>${msg}</h1>${h2}</center><br/><center><button class="extraLarge continue" id="continue" onclick="location.reload();">CONTINUE</button><br/><button onclick="" class="large" id="next-btn">Next Level</button><button onclick="" class="large" id="retry-btn">Retry Level</button></center></div>`;
     let nextBtn = document.getElementById('next-btn');
