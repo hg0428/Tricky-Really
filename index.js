@@ -10,12 +10,14 @@ const __dirname = dirname(__filename);
 const { fork } = require('child_process');
 const child = fork(`${__dirname}/leaderboard.js`);
 /*
+✅ — Completed
+⚠️ — In Progress
 -------TODO-------
-+ Finish spelling levels. 
++ Finish spelling levels.  ✅
 + Add overall leaderboard sorting ✅
 + Add full game credits list ✅
 + Always On + Boost ✅
-+ Add multi-level support for platformers
++ Add multi-level support for platformers ✅
 + Make the platformer longer 
 + Add more platformer levels 
 + Mobile support for platfomer. 
@@ -24,7 +26,7 @@ const child = fork(`${__dirname}/leaderboard.js`);
 + Useless functions
 + Clicker section
 + Math section
-+ Profiles with /@username
++ Profiles with /@username ⚠️
 */
 console.log('ON')
 
