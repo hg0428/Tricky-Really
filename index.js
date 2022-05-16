@@ -18,7 +18,7 @@ const child = fork(`${__dirname}/leaderboard.js`);
 + Add multi-level support for platformers
 + Make the platformer longer 
 + Add more platformer levels 
-+ Mobile support for platfomer 
++ Mobile support for platfomer. 
 + Sort levels ✅
 + Button to go home, to retry, and next level ✅
 + Useless functions
@@ -50,18 +50,39 @@ const io = socketio(httpserver);
 const directory = path.join(__dirname, "client");
 var fs = require('fs');
 const nunjucks = require('nunjucks');
-
-/*db.list().then(keys => {
+/*
+db.list().then(async keys => {
   for (let key of keys) {
-    db.delete(key).then(() => { });
+    let u = await db.get(key);
+    let user = {
+        id: u.id,
+        name: u.name,
+        roles: u.roles,
+        teams: u.teams,
+        games: 0,
+        score: 0,
+        currentGame: false,
+        completed: {},
+        next: {
+          file: null,
+          level: null
+        },
+        profilepic: u.profilepic,
+        bio: u.bio,
+        isVerified: u.isVerified,
+        realName: u.realName,
+        levelsDone: 0,
+      }
+      db.set(key, user).then(() => { });
+    //db.delete(key).then(() => { });
   }
-})*/
-
+})
+*/
 //Rate limiter
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const completeLimiter = new RateLimiterMemory({
-  points: 3, // 5 points
-  duration: 3, // per second
+  points: 4, // 4 points
+  duration: 2, // per 2 seconds
 });
 
 function saveGames() {
@@ -106,14 +127,19 @@ try {
   var Games = JSON.parse(fs.readFileSync('GamesRevert.json', 'utf8'));
 }
 var GameFiles = Object.keys(Games);
+var totalLevels = 0;
+for (let f of GameFiles) {
+  totalLevels += Object.keys(Games[f].levels).length;
+}
+console.log(totalLevels);
 //Leaderboard
 function sortLeaderboard(file, levelName) {
-  child.send({event:'sort',file:file, level:levelName})
+  child.send({ event: 'sort', file: file, level: levelName });
 }
 // Set Users
 function setUser(uID, u) {
   USERS[uID] = u;
-  clientUsers[uID] = {
+  return clientUsers[uID] = {
     bio: u.bio,
     image: u.profilepic,
     name: u.name,
@@ -122,7 +148,7 @@ function setUser(uID, u) {
     avg: Math.min(u.score / u.games || 0, 100),
     completed: u.completed,
     levelsDone: u.levelsDone
-  }
+  };
 }
 db.list().then(async (keys) => {
   for (let uID of keys) {
@@ -141,7 +167,7 @@ db.list().then(async (keys) => {
     setUser(uID, u);
     UnameToUid[u.name] = uID;
   }
-  child.send({event: 'ready', clientUsers:clientUsers});
+  child.send({ event: 'ready', clientUsers: clientUsers }); 
   for (let file in Games) {
     Leaderboards[file] = {};
     for (let levelName in Games[file].levels) {
@@ -192,7 +218,7 @@ app.get('/', async function(req, res) {
         realName: data.fullName,
         levelsDone: 0,
       }
-      setUser(uID, user)
+      child.send({ event: 'newuser', uID: uID, User: setUser(uID, user)});
       db.set(uID, user).then(() => { });
       USERS[uID] = user;
     }
@@ -207,7 +233,8 @@ app.get('/', async function(req, res) {
 app.get('/@:name', async function(req, res) {
   res.render('profile.html', {
     name: req.params.name,
-    user: USERS[UnameToUid[req.params.name]]
+    user: clientUsers[UnameToUid[req.params.name]],
+    totalLevels:totalLevels,
   })
 });
 
@@ -314,16 +341,10 @@ io.on('connection', async (socket) => {
   });
   //Get a game (when the start button is pressed)
   socket.on('get', () => {
-    console.log('GET');
     let game = getLvl();
-    console.log(game)
     let res = startLvl(game.file, game.level);
-    console.log(res)
     if (res) {
-      console.log('game served');
       socket.emit('level', game);
-    } else {
-      console.log('err', res);
     }
   });
   //When the user selects a game to play
@@ -351,8 +372,9 @@ io.on('connection', async (socket) => {
       //console.log('catch')
       return;
     }
-    moves = Math.max(moves, game.moves);
+    moves = Math.max(moves, game.moves || 0);
     score = Math.min(score, 100);
+    if (score <= 0) return;
     time = Math.max(time, 0);
     let calcTime = end - game.start;
     //Set the min time to the calculated time - 300
@@ -368,24 +390,29 @@ io.on('connection', async (socket) => {
       user.completed[game.file][game.level] = {
         time: time,
         score: score,
-        moves: moves
+        moves: moves,
+        timesPlayed: 0
       };
       user.levelsDone++;
     } else if (score >= user.completed[game.file][game.level].score) {
-      if (time < user.completed[game.file][game.level].score) user.completed[game.file][game.level].score = score;
+    user.completed[game.file][game.level].score = score;
       if (time < user.completed[game.file][game.level].time) user.completed[game.file][game.level].time = time;
       if (moves < user.completed[game.file][game.level].moves) user.completed[game.file][game.level].moves = moves;
     }
     user.score += score;
     user.games++;
-
+    user.completed[game.file][game.level].timesPlayed++;
     //Check if the user set a record
     if (time < Games[game.file].levels[game.level].recordTime) {
       Games[game.file].levels[game.level].recordTime = time;
     } else if (time > Games[game.file].levels[game.level].worstTime) {
       Games[game.file].levels[game.level].worstTime = time;
     }
-    sortLeaderboard(game.file, game.level);
+    if (score > 0) {
+      child.send({ event: 'updateuser', uID: uID, game:game ,result: user.completed[game.file][game.level]});
+      sortLeaderboard(game.file, game.level);
+    }
+    
     user.currentGame = false;
     setUser(uID, user);
     db.set(uID, user).then(() => { });
@@ -397,6 +424,6 @@ io.on('connection', async (socket) => {
     delete Online[uID];
   })
 })
-child.on("message",(msg)=> {
+child.on("message", (msg) => {
   Leaderboards = msg.Leaderboards;
 }); 

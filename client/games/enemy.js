@@ -1,11 +1,12 @@
 //Did some code cleanup.
-
+//Thanks; I Did more code cleanup. Also made it possible to have multiple levels.
 /*******SETUP********/
+document.body.innerHTML = '<h3 id="riddle"></h3>';
+let Riddle = document.getElementById('riddle');
 let head = document.getElementsByTagName('head')[0];
 let style = document.createElement('link');
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
-document.body.innerHTML = '<h3>You have to win this. Did you know that win is "vinde" in Danish? So, I guess get a V for vinde.</h3><input id="hidden"/>';
 style.href = "/css/game.css";
 style.type = 'text/css';
 style.rel = 'stylesheet';
@@ -13,7 +14,40 @@ canvas.height = document.body.offsetHeight;
 canvas.width = document.body.offsetWidth;
 document.body.appendChild(canvas);
 head.append(style);
-
+let groundImg = new Image()
+groundImg.src = '/img/grass.jpg';
+const shapes = {
+  rect: (x, y, w, h) => ctx.fillRect(x, y, w, h),
+  groundImage: (x, y, w, h) => ctx.drawImage(groundImg, x, y, w, h),
+  triangle: (x, y, w, h) => {
+    ctx.beginPath();
+    ctx.moveTo(x, y + h); //bottom left
+    ctx.lineTo(x + w / 2, y); //middle top
+    ctx.lineTo(x + w, y + h); //bottom right
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+const Levels = {
+  'vinde': {
+    riddle:'You have to win this. Did you know that win is "vinde" in Danish? So, I guess get a V for vinde.',
+    setup: function() {
+      spikes[0] = new Entity('enemy', 50, 80, 200, 0, 'grey', shapes.triangle);
+      spikes[1] = new Entity('enemy', 50, 80, 500, 0, 'grey', shapes.triangle);
+      spikes[2] = new Entity('enemy', 50, 80, -400, 0, 'grey', shapes.triangle);
+      spikes[3] = new Entity('enemy', 50, 80, -450, 0, 'grey', shapes.triangle);
+      player = new Entity('player', 70, 70, 0, 0, 'green', shapes.rect);
+      ground = new Entity('ground', 6000, 200, 100, canvas.height / 2 - 100, 'green', shapes.groundImage, true);
+    },
+    eachFrame: function(elapsed) {
+      if (KEYS.pressedKeys.has('v') && LEVEL === 'vinde') {
+        game.score = 100;
+        game.complete();
+        game.Continue('You Won!!!', 'green', `Completed in ${game.time / 1000} seconds!`, game);
+      }
+    }
+  }
+}
 let game = new Game('games/enemy.js', LEVEL);
 console.error = function(...args) {
   document.write(args.join(' '));
@@ -28,73 +62,78 @@ class Camera {
     this.velX = 0;
   }
   update(elapsed) {
-    this.offetX += this.velX*(elapsed/1000);
-    this.offsetY += this.velY*(elapsed/1000);
+    this.offetX += this.velX * (elapsed / 1000);
+    this.offsetY += this.velY * (elapsed / 1000);
   }
 }
 
 class Entity {
-  constructor(name, width, height, x, y, color, draw) {
+  constructor(name, width, height, x, y, color, draw, fixed) { //"Static" is a reserved word, I replaced it with "fixed"
+    if (name === 'enemy') {
+      numSpikes++;
+      spikes.push(this);
+    };
     this.name = name;
-    this.width=width;
-    this.height=height;
+    this.fixed = fixed || false;
+    this.width = width;
+    this.height = height;
     this.x = x;
     this.y = y;
-    this.left = x - this.width/2;
-    this.top = y - this.height/2;
-    this.right = x + this.width/2;
-    this.bottom = y + this.height/2;
+    this.left = x - this.width / 2;
+    this.top = y - this.height / 2;
+    this.right = x + this.width / 2;
+    this.bottom = y + this.height / 2;
     this.color = this.colour = color;
-    this.drawCallback=draw;
+    this.drawCallback = draw;
     this.vel = {
-      x:0,
-      y:0
+      x: 0,
+      y: 0
     }//px per ms
     Entities.push(this);
   }
   setTop(pos) {
-    this.y = pos + this.height/2;
+    this.y = pos + this.height / 2;
     this.top = pos;
-    this.bottom = this.y + this.height/2;
+    this.bottom = this.y + this.height / 2;
   }
   setLeft(pos) {
-    this.x = pos + this.width/2;
+    this.x = pos + this.width / 2;
     this.left = pos;
-    this.right = this.x + this.width/2;
+    this.right = this.x + this.width / 2;
   }
   setBottom(pos) {
-    this.y = pos - this.height/2;
+    this.y = pos - this.height / 2;
     this.bottom = pos;
-    this.top = this.y - this.height/2;
+    this.top = this.y - this.height / 2;
   }
   setRight(pos) {
-    this.x = pos - this.width/2;
+    this.x = pos - this.width / 2;
     this.right = pos;
-    this.left = this.x - this.width/2;
+    this.left = this.x - this.width / 2;
   }
   setX(pos) {
     this.x = pos;
-    this.left = this.x - this.width/2;
-    this.right = this.x + this.width/2;
+    this.left = this.x - this.width / 2;
+    this.right = this.x + this.width / 2;
   }
   setY(pos) {
     this.y = pos;
-    this.top = this.y - this.height/2;
-    this.bottom = this.y + this.height/2;
+    this.top = this.y - this.height / 2;
+    this.bottom = this.y + this.height / 2;
   }
   draw(elapsed) {
-    this.x += this.vel.x*(elapsed/50); //Speed up, slow down
-    this.y += this.vel.y*(elapsed/50);
+    this.x += this.vel.x * (elapsed / 50); //Speed up, slow down
+    this.y += this.vel.y * (elapsed / 50);
     if (this.name === 'player') {
       camera.offsetY = player.y;
       camera.offsetX = player.x;
     }
-    this.left = this.x - this.width/2;
-    this.top = this.y - this.height/2;
-    this.right = this.x + this.width/2;
-    this.bottom = this.y + this.height/2;
-    let x = this.x+(canvas.width/2)-(this.width/2) - camera.offsetX;
-    let y = this.y+(canvas.height/2)-(this.height/2) - camera.offsetY;
+    this.left = this.x - this.width / 2;
+    this.top = this.y - this.height / 2;
+    this.right = this.x + this.width / 2;
+    this.bottom = this.y + this.height / 2;
+    let x = this.x + (canvas.width / 2) - (this.width / 2) - camera.offsetX;
+    let y = this.y + (canvas.height / 2) - (this.height / 2) - camera.offsetY;
     let width = this.width;
     let height = this.height;
     ctx.fillStyle = this.color;
@@ -105,43 +144,23 @@ class Entity {
 /*******GLOBALS*********/
 let camera = new Camera();
 let prevFrame = 0;
-let rect, player, ground
+let player, ground
 let playerGravity = 25;
 let onGround = 0;
 let Entities = [];
-let spikes = []
-let numSpikes = 4;
+let spikes = [];
+let numSpikes = 0;
 let images = []
 let imageSrcs = ["/img/grass.jpg"]
 
 for (let i = 0; i < imageSrcs; i++) {
-  
+
 }
-let groundImg = new Image()
-groundImg.src = '/img/grass.jpg';
-groundImg.onload = function() {
-  rect = (x, y, w, h) => ctx.fillRect(x, y, w, h);
-  let groundImage = (x, y, w, h) => ctx.drawImage(groundImg, x, y, w, h);
-  let triangle = (x, y, w, h) => {
-    ctx.fillStyle = 'grey';
-    ctx.beginPath();
-    ctx.moveTo(x, y+h); //bottom left
-    ctx.lineTo(x+w/2, y); //middle top
-    ctx.lineTo(x+w, y+h); //bottom right
-    ctx.closePath();
-    ctx.fill();
-  }
-  ground = new Entity('ground', 6000, 200, 100, canvas.height/2-100, 'green', groundImage);
-  for (let i = 0; i < numSpikes; i++) {
-    spikes[0] = new Entity('enemy', 50, 80, 200, 0, 'grey', triangle);
-    spikes[1] = new Entity('enemy', 50, 80, 500, 0, 'grey', triangle);
-    spikes[2] = new Entity('enemy', 50, 80, -400, 0, 'grey', triangle);
-    spikes[3] = new Entity('enemy', 50, 80, -450, 0, 'grey', triangle);
-  }
-  player = new Entity('player', 70, 70, 0, 0, 'green', rect);
-  game.start();
-  window.requestAnimationFrame(gameLoop);
-}
+Riddle.innerHTML = Levels[LEVEL].riddle;
+Levels[LEVEL].setup();
+game.start();
+
+
 
 function rectRectCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
   return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
@@ -149,20 +168,21 @@ function rectRectCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
 
 /*******START OF GAME LOOP**********/
 let gameLoop = function(timestamp) {
-  let elapsed = timestamp-prevFrame;
+  let elapsed = timestamp - prevFrame;
   prevFrame = timestamp;
   ctx.fillStyle = "lightblue";
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
+
+  //JUMPING
   if (KEYS.pressedKeys.has(' ')) {
     game.moves++;
-    if (onGround !== false) { //true
+    if (onGround !== false) {
       player.vel.y = -elapsed;
       onGround += elapsed;
     }
     if (onGround > 288) onGround = false;
-  } 
+  }
 
   //PLAYER MOVEMENT
   if (KEYS.pressedKeys.has('a') || KEYS.pressedKeys.has('ArrowLeft')) {
@@ -174,25 +194,22 @@ let gameLoop = function(timestamp) {
   } if (KEYS.pressedKeys.has('d') || KEYS.pressedKeys.has('ArrowRight')) {
     game.moves++;
     player.x += elapsed;
-  } 
-  if (KEYS.pressedKeys.has('v') && LEVEL === 'vinde') {
-    game.score = 100;
-    game.complete();
-    document.body.innerHTML = `<div class="center" style="color:green"><center><h1>You WON!!!</h1><h2>Completed in ${game.time/1000} seconds!</h2></center><br/><center><button class="extraLarge continue" onclick="location.reload();">Continue</button></center></div>`;
   }
-
+  //Level Specific stuff
+  Levels[LEVEL].eachFrame(elapsed);
+  //SPIKES
   for (let i = 0; i < numSpikes; i++) {
-    if (rectRectCollide(player.x, player.y, player.width/1.5, player.height, spikes[i].x, spikes[i].y, spikes[i].width, spikes[i].height)) {
+    if (rectRectCollide(player.x, player.y, player.width / 1.5, player.height, spikes[i].x, spikes[i].y, spikes[i].width, spikes[i].height)) {
       game.complete();
-      document.body.innerHTML = `<div class="center" style="color:red"><center><h1>You died!</h1><h2>I guess it's over</h2></center><br/><center><button class="extraLarge continue" onclick="location.reload();">Continue</button></center></div>`;
+      game.Continue('You died!', 'red', "I guess it's over", game);
     }
   }
-  
+  //DRAW ENTIITIES
   for (t of Entities) {
     t.draw(elapsed);
-    if (t.name == 'ground') continue;
+    if (t.fixed) continue;
     t.bottom = t.y + t.height / 2;
-    ground.top = ground.y-ground.height/2;
+    ground.top = ground.y - ground.height / 2;
     if (t.bottom + 1 > ground.top) {
       t.vel.y = 0;
       if (t === player) {
@@ -210,7 +227,7 @@ let gameLoop = function(timestamp) {
   camera.update(elapsed);
   window.requestAnimationFrame(gameLoop);
 } //END OF GAME LOOP
-
+window.requestAnimationFrame(gameLoop);
 document.addEventListener('keyup', (e) => {
   let code = e.keyCode || e.which || e.code || e.charCode;
   if (code === 13) {

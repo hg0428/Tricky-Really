@@ -19,6 +19,11 @@ process.on("message", (msg) => {
   if (msg.event === 'ready') {
     ready = true;
     clientUsers = msg.clientUsers;
+  } else if (msg.event === 'newuser') {
+    clientUsers[msg.uID] = msg.User;
+  } else if (msg.event === 'updateuser') {
+      clientUsers[msg.uID].completed[msg.game.file] = clientUsers[msg.uID].completed[msg.game.file] || {};
+    clientUsers[msg.uID].completed[msg.game.file][msg.game.level] = msg.result;
   } else {
     queue.push({ file: msg.file, level: msg.level });
     if (!queueRunning) continueQueue();
@@ -36,6 +41,7 @@ function continueQueue() {
     }
   }
   sortOverall();
+  queueRunning=false;
 }
 function sortLeaderboard(file, levelName) {
   if (!Leaderboards[file]) {

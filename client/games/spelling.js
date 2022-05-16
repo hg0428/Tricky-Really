@@ -122,8 +122,11 @@ const words = {
     word: 'hi',
     tricks: {
       'backwards': {},
-      'add': {
-        what: [['h', 'ello']]
+      'switch': {
+        what: ['hello', 1]
+      },
+      add: {
+        what: [['llo', 'he']]
       }
     },
     riddle: "You're on your own this time. 😀",
@@ -141,6 +144,26 @@ const words = {
     },
     credits: ['@CuriousFox14', '@hg0428'],
     riddle: 'Watch out for the tricks!'
+  },
+  'Aaahhhhh!': {
+    word: 'anger',
+    tricks: {
+      keymap: {
+        what: {
+          'a':'1',
+          'n':'2',
+          'g':'3',
+          'e':'4',
+          'r':'5',
+        }
+      },
+      backwards:{},
+      add: {
+        what: [['anger', ' management']]
+      }
+    },
+    credits: ['@hg0428', 'Angry Comments'],
+    riddle: '3 tricks, good luck! I think you know how this works by now.'
   }
 }
 
@@ -161,18 +184,30 @@ game.start();
 
 let submit = function() {
   if (!game.running) return;
-  game.complete();
   if (word.word === textbox.value || word.word === textbox.value.trim()) {
     game.score = 100;
     game.Continue("Correct!", 'green', `Completed in ${game.time / 1000} seconds using ${game.moves} moves.`, game)
   } else {
-    document.body.innerHTML = `<div class="center" style="color:red"><center><h1>Incorrect!</h1></center><br/><center><button class="extraLarge continue" onclick="location.reload();">CONTINUE</button></center></div>`;
+    game.Continue('Incorrect!', 'red', '', game);
   }
+  game.complete();
 }
 textbox.oninput = function() {
   textbox.value = textbox.value.toLowerCase();
   game.moves++;
-  if (word.tricks['backwards']) {
+  if (word.tricks['keymap']) {
+    let trick = word.tricks['keymap'];
+    for (from in trick.what) {
+      let to = trick.what[from]
+      if (textbox.value.endsWith(from)) {
+        textbox.value = textbox.value.slice(0, -from.length) + to;
+        break;
+      } if (textbox.value.endsWith(to)) {
+        textbox.value = textbox.value.slice(0, -to.length) + from;
+        break;
+      }
+    }
+  } if (word.tricks['backwards']) {
     let trick = word.tricks['backwards'];
     if (!trick.val) {
       trick.val = "";
@@ -202,28 +237,16 @@ textbox.oninput = function() {
       textbox.value = textbox.value.replaceAll(trick.what[0], trick.what[1]);
     }
     textbox.value = textbox.value.replaceAll(trick.what[1] + trick.what[0], trick.what[0]);
-  } if (word.tricks['keymap']) {
-    let trick = word.tricks['keymap'];
-    for (from in trick.what) {
-      let to = trick.what[from]
-      if (textbox.value.endsWith(from)) {
-        textbox.value = textbox.value.slice(0, -from.length) + to;
-        break;
-      } if (textbox.value.endsWith(to)) {
-        textbox.value = textbox.value.slice(0, -to.length) + from;
-        break;
-      }
-    }
   } if (word.tricks['switch']) {
     let trick = word.tricks['switch'];
     if (textbox.value.length >= trick.what[1]) {
       if (!word.old) word.old = word.word;
       word.word = trick.what[0];
-      textbox.placeholder = word.word;
+      textbox.placeholder = `Spell ${word.word}`;
       spellingWord.innerHTML = word.word;
     } else if (textbox.value.length < trick.what[1] && word.old) {
       word.word = word.old;
-      textbox.placeholder = word.word;
+      textbox.placeholder = `Spell ${word.word}`;
       spellingWord.innerHTML = word.word;
     }
   }

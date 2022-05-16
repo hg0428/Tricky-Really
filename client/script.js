@@ -31,6 +31,14 @@ function Reset() {
   document.body.innerHTML = 'Loading...';
 }
 
+function onBack() {
+  let over = document.getElementsByClassName('overcontroller');
+  for (let o of over) {
+    console.log(o.id);
+    o.style.display = 'none';
+  }
+}
+
 START.onclick = function() {
   if (!loggedin) {
     return alert('Sign in first.');
@@ -55,8 +63,13 @@ function loadLevel(file, level) {
   socket.emit('loadGame', file, level);
 }
 Select.onclick = function() {
-  if (!user) console.log('Waiting for server...');
-  completed = user.completed;
+  console.log('ONCLICK');
+  let premade = document.getElementById('selectLevel');
+  if (premade) {
+    return premade.style.display = 'block';
+  }
+  if (!user) alert('Waiting for server...');
+  let completed = user.completed;
   let text = '';
   for (game in Games) {
     let g = '<div class="game">';
@@ -100,22 +113,27 @@ Select.onclick = function() {
     g += '</div>';
     text += g;
   }
-  document.body.innerHTML = `<button onclick="location.reload();" class="back">Back</button><br/><br/><br/>${text}`;
+  document.body.insertAdjacentHTML("beforeend", `<div class="overcontroller" id="selectLevel"><button onclick="onBack();" class="back">Back</button><br/><br/><br/>${text}</div>`);
 };
-function makeLeaderboard(users, gen) {
+function makeLeaderboard(id, users, gen) {
+  let premade = document.getElementById(`leaderboard-${id}`);
+  if (premade) {
+    premade.style.display = 'block';
+    return;
+  }
   let code =
-    '<button onclick="location.reload();" class="back">Back</button><br/><br/><br/><br/><div class="Leaderboard">';
+    '<button onclick="onBack();" class="back">Back</button><br/><br/><br/><br/><div class="Leaderboard">';
   for (u of users) {
     let data = gen(u);
     if (data === false) continue;
     code += `<div class="player">${data}</div>`;
   }
   code += '</div>';
-  document.body.innerHTML = code;
+  document.body.innerHTML += `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`;
 }
 function levelLeaders(file, level) {
-  users = Leaderboards[file][level]
-  makeLeaderboard(users, u => {
+  users = Leaderboards[file][level];
+  makeLeaderboard(`${file}/${level}`, users, u => {
     if (!u.completed[file] || !u.completed[file][level]) return false;
     let data = u.completed[file][level];
     let gameData = Games[file].levels[level];
@@ -139,7 +157,6 @@ function levelLeaders(file, level) {
       }%</span> in <span style="color:${timecolor}">${(data.time / 1000).toFixed(
         2
       )} seconds</span>.`;
-    //add colors later
   });
 }
 
@@ -148,7 +165,7 @@ Leaderboard.onclick = function() {
     console.log('Waiting for server...');
     return false;
   }
-  makeLeaderboard(Leaderboards.overall, u => {
+  makeLeaderboard('overall', Leaderboards.overall, u => {
     let avgcolor = 'green';
     let gamescolor = 'green';
     let scorecolor = 'green';
@@ -202,3 +219,11 @@ document.addEventListener('keydown', function(event) {
 });
 document.addEventListener('click', playMusic);
 document.addEventListener('touchstart', playMusic);
+window.addEventListener('onload', function() {
+  Object.keys(window).forEach(key => {
+    if (/^on/.test(key)) {
+      console.log(key);
+      window.addEventListener(key.slice(2), playMusic);
+    }
+  });
+});

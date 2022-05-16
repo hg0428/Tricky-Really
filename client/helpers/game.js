@@ -20,6 +20,7 @@ class Game {
     if (this.running) {
       this.running = false;
       this.endTime = Date.now();
+      console.log(this.score, this.time, this.moves);
       this.socket.emit('complete', this.score, this.time, this.moves);
     }
   } Continue(msg, color, h2, game) {

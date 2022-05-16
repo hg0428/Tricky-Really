@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width">
     <title>{{name}} — Tricky Really</title>
     <script src="/helpers/interface.js"></script>
-    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <link href="/profile.css" rel="stylesheet" type="text/css" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
   </head>
   <body>
-    <h1>{{name}}</h1>
+    <div class="userprofile">
+      <div class="intro">
+        <img src="{{user.image}}" id="profilepic" class="profilepic"/><h1 id="username" class="username">{{name}}</h1>
+        <div id="progress" class="progress">{{user.levelsDone/totalLevels*100}}%<div class="complete" width="{{user.levelsDone/totalLevels}}%"></div></div>
+      </div>
+    </div>
   </body>
 </html>
