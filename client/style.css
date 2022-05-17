@@ -183,13 +183,20 @@ input {
   width:320px;
   padding:0;
 }
-.credits {
+#credits-btn {
   position:fixed;
-  bottom:10px;
-  left:10px;
-}
-.credits a {
+  bottom:30px;
+  left:30px;
+  padding:5px;
+  font-size:1.35rem;
   color:rgb(80, 200, 240);
+  /*border-radius:50%;*/
+  transition:.2s;
+  text-decoration:none;
+}
+#credits-btn:hover {
+  transform: scale(1.3);
+  text-shadow: -5px 5px 1px rgba(0,0,0,0.3);
 }
 #hidden {
   position:fixed;
