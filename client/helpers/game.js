@@ -2,6 +2,7 @@
 function onload() {
   socket = initSocket();
 }
+let head = document.getElementsByTagName('head')[0];
 class Game {
   constructor(file, level) {
     this.file = file;
@@ -11,11 +12,31 @@ class Game {
     this.moves = 0;
     this.score = 0;
     this.socket = socket;
+    this.document = document.getElementById('GAME');
   }
   start() {
     this.running = true;
     this.startTime = Date.now();
   }
+  append(html) {
+    this.document.innerHTML += html;
+  }
+  set(html) {
+    this.document.innerHTML = html;
+  }
+  appendChild(elem) {
+    this.document.appendChild(elem);
+  }
+  loadCSS(path) {
+    let style = document.createElement('link');
+    style.href = path;
+    style.type = 'text/css';
+    style.rel = 'stylesheet';
+    head.append(style);
+  }
+  color(color) {
+    this.document.style.background = color;
+  } 
   complete() {
     if (this.running) {
       this.running = false;
@@ -25,7 +46,7 @@ class Game {
     }
   } Continue(msg, color, h2, game) {
     if (h2) h2 = `<h2>${h2}</h2>`;
-    document.body.innerHTML = `<div class="center" style="color:${color}"><center><h1>${msg}</h1>${h2}</center><br/><center><button class="extraLarge continue" id="continue" onclick="location.reload();">CONTINUE</button><br/><button onclick="" class="large" id="next-btn">Next Level</button><button onclick="" class="large" id="retry-btn">Retry Level</button></center></div>`;
+    this.set(`<div class="center" style="color:${color}"><center><h1>${msg}</h1>${h2}</center><br/><center><button class="extraLarge continue" id="continue" onclick="onBack();">CONTINUE</button><br/><button onclick="" class="large" id="next-btn">Next Level</button><button onclick="" class="large" id="retry-btn">Retry Level</button></center></div>`);
     let nextBtn = document.getElementById('next-btn');
     let retryBtn = document.getElementById('retry-btn');
     let file = this.file;
@@ -57,7 +78,7 @@ function Touching(obj1, obj2) {
   obj2.halfWidth = obj2.height / 2;
   obj1.halfHeight = obj1.height / 2;
   obj2.halfHeight = obj2.height / 2;
-  var ret = {
+  let ret = {
     touching: false,
     touchingX: false,
     touchingY: false,
@@ -69,22 +90,22 @@ function Touching(obj1, obj2) {
     obj1.y > obj2.y + obj2.height ||
     obj1.y + obj1.height < obj2.y
   )) {
-    var CenterX1 = obj1.x + obj1.halfWidth;
-    var CenterY1 = obj1.y + obj1.halfHeight;
-    var CenterX2 = obj2.x + obj2.halfWidth;
-    var CenterY2 = obj2.y + obj2.halfHeight;
+    let CenterX1 = obj1.x + obj1.halfWidth;
+    let CenterY1 = obj1.y + obj1.halfHeight;
+    let CenterX2 = obj2.x + obj2.halfWidth;
+    let CenterY2 = obj2.y + obj2.halfHeight;
 
     // Calculate the distance between centers
-    var diffX = CenterX1 - CenterX2;
-    var diffY = CenterY1 - CenterY2;
+    let diffX = CenterX1 - CenterX2;
+    let diffY = CenterY1 - CenterY2;
 
     // Calculate the minimum distance to separate along X and Y
-    var minXDist = obj1.halfWidth + obj2.halfWidth;
-    var minYDist = obj1.halfHeight + obj2.halfHeight;
+    let minXDist = obj1.halfWidth + obj2.halfWidth;
+    let minYDist = obj1.halfHeight + obj2.halfHeight;
 
     // Calculate the depth of collision for both the X and Y axis
-    var depthX = diffX > 0 ? minXDist - diffX : -minXDist - diffX;
-    var depthY = diffY > 0 ? minYDist - diffY : -minYDist - diffY;
+    let depthX = diffX > 0 ? minXDist - diffX : -minXDist - diffX;
+    let depthY = diffY > 0 ? minYDist - diffY : -minYDist - diffY;
 
     // Now that you have the depth, you can pick the smaller depth and move
     // along that axis.

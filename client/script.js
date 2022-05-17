@@ -26,15 +26,15 @@ function initSocket() {
   }
 }
 
-function Reset() {
-  socket.emit('get');
-  document.body.innerHTML = 'Loading...';
+function GameOn() {
+  let gametest = document.getElementById('GAME');
+  if (gametest) gametest.remove();
+  document.body.insertAdjacentHTML("beforeend", '<div id="GAME" class="overcontroller">Loading...</div>');
 }
 
 function onBack() {
   let over = document.getElementsByClassName('overcontroller');
   for (let o of over) {
-    console.log(o.id);
     o.style.display = 'none';
   }
 }
@@ -47,7 +47,7 @@ START.onclick = function() {
   } else if (!ready) {
     return alert('Waiting for server...');
   }
-  Reset();
+  socket.emit('get');
 };
 
 function loadLevel(file, level) {
@@ -60,6 +60,7 @@ function loadLevel(file, level) {
   let myScript = document.createElement('script');
   myScript.setAttribute('src', file);
   document.body.appendChild(myScript);
+  GameOn();
   socket.emit('loadGame', file, level);
 }
 Select.onclick = function() {
@@ -129,7 +130,7 @@ function makeLeaderboard(id, users, gen) {
     code += `<div class="player">${data}</div>`;
   }
   code += '</div>';
-  document.body.innerHTML += `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`;
+  document.body.insertAdjacentHTML("beforeend", `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`);
 }
 function levelLeaders(file, level) {
   users = Leaderboards[file][level];

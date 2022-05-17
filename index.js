@@ -18,8 +18,8 @@ const child = fork(`${__dirname}/leaderboard.js`);
 + Add full game credits list ✅
 + Always On + Boost ✅
 + Add multi-level support for platformers ✅
-+ Make the platformer longer 
-+ Add more platformer levels 
++ Make the platformer longer.
++ Add more platformer levels. 
 + Mobile support for platfomer. 
 + Sort levels ✅
 + Button to go home, to retry, and next level ✅
