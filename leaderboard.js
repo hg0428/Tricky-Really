@@ -2,7 +2,11 @@
 var ready = false;
 var queue = [];
 var queueRunning = false;
-var Leaderboards = {};
+try {
+  var Leaderboards = JSON.parse(fs.readFileSync('Leaderboards.json', 'utf8'));
+} catch {
+  var Leaderboards = {};
+}
 var clientUsers;
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -13,7 +17,7 @@ try {
   var Games = JSON.parse(fs.readFileSync('GamesRevert.json', 'utf8'));
 }
 for (let file in Games) {
-  Leaderboards[file] = {};
+  if (!Leaderboards[file]) Leaderboards[file] = {};
 }
 process.on("message", (msg) => {
   if (msg.event === 'ready') {
@@ -22,7 +26,7 @@ process.on("message", (msg) => {
   } else if (msg.event === 'newuser') {
     clientUsers[msg.uID] = msg.User;
   } else if (msg.event === 'updateuser') {
-      clientUsers[msg.uID].completed[msg.game.file] = clientUsers[msg.uID].completed[msg.game.file] || {};
+    clientUsers[msg.uID].completed[msg.game.file] = clientUsers[msg.uID].completed[msg.game.file] || {};
     clientUsers[msg.uID].completed[msg.game.file][msg.game.level] = msg.result;
   } else {
     queue.push({ file: msg.file, level: msg.level });
@@ -41,7 +45,12 @@ function continueQueue() {
     }
   }
   sortOverall();
-  queueRunning=false;
+  fs.writeFile("Leaderboards.json", JSON.stringify(Leaderboards), function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  queueRunning = false;
 }
 function sortLeaderboard(file, levelName) {
   if (!Leaderboards[file]) {

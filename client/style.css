@@ -183,6 +183,11 @@ input {
   width:320px;
   padding:0;
 }
+.credits {
+  position: absolute;
+  bottom:10px;
+  left:10px;
+}
 #credits-btn {
   position:fixed;
   bottom:30px;
