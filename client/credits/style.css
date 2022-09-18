@@ -6,19 +6,50 @@
   margin-left: 2em;
   display: inline-block;
   width: 20em;
-  margin-bottom:10px;
-  margin-top:15px;
+  margin-bottom: 10px;
+  margin-top: 15px;
+  padding: 10px;
+  transition: .16s;
+  border-radius: 20px;
+}
+.credits-sect:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  backdrop-filter: brightness(94%);
+  -webkit-backdrop-filter: brightness(94%);
 }
 .credits-sect .credits-credit {
   font-size: 1.25rem;
   display: block;
+  transition: .16s;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.credits-sect .credits-credit:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  backdrop-filter: brightness(94%);
+  -webkit-backdrop-filter: brightness(94%);
 }
 .credits-sect .credits-credit .credits-title {
-  width: 295px;
+  width: 16em;
   position: relative;
   display: inline-block;
   line-height: 45px;
   vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.credits-sect h2 {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .back {
   position:fixed;
@@ -34,15 +65,19 @@
   text-decoration:none;
 }
 .credits-sect .credits-credit .credits-name {
-  width: 100px;
+  width: 6.25em;
   color: rgb(70, 190, 230);
   text-decoration: none;
   position: relative;
   display: inline-block;
   line-height: 45px;
   vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
-.credits-sect .credits-credit .credits-name {}
 .credits-sect .credits-credit .credits-name:hover {
+  cursor: pointer;
   text-decoration: underline;
 }
