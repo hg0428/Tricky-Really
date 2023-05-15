@@ -224,7 +224,7 @@ input {
   padding: 20px;
   /*border: 1px solid #AFAFAF;*/
 }
-.Leaderboard .player {
+.Leaderboard .hover-card {
   position: relative;
   display: block;
   width: calc(100% - 30px);
@@ -238,13 +238,13 @@ input {
   padding: 10px;
   /*border-bottom: 1px solid #AFAFAF;*/
 }
-.Leaderboard .player:hover {
+.Leaderboard .hover-card:hover {
   cursor: pointer;
   transform: scale(1.01);
   backdrop-filter: brightness(85%);
   -webkit-backdrop-filter: brightness(94%);
 }
-.Leaderboard .player .player-name {
+.Leaderboard .hover-card .hover-card-name {
   font-weight:bold;
   width: 200px;
   position: relative;
@@ -254,14 +254,14 @@ input {
   font-size:1.125rem;
   vertical-align:middle;
 }
-.Leaderboard .player .player-image {
+.Leaderboard .hover-card .hover-card-image {
   width: 50px;
   position: relative;
   display: inline-block;
   line-height: 45px;
   vertical-align:middle;
 }
-.Leaderboard .player .player-image img {
+.Leaderboard .hover-card .hover-card-image img {
   border-radius:50%;
   width:35px;
   height:35px;
@@ -269,7 +269,7 @@ input {
   vertical-align:middle;
 }
 
-.Leaderboard .player .player-name.this {
+.Leaderboard .hover-card .hover-card-name.this {
   font-weight:800;
   font-size:1.25rem;
   color:green;
@@ -295,6 +295,9 @@ input {
   height:100%;
   background:rgb(108, 136, 221);
   z-index:20;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 #controls .controlbtn {
   backdrop-filter: blur(7px);
@@ -323,6 +326,12 @@ input {
   border-radius: 5px;
 }
 #controls {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
   position: fixed;
   bottom: 10px;
   right: 10px;
@@ -334,7 +343,8 @@ input {
   display: none;
 }
 #controls .controlbtn:active {
-  transform: scale(0.95);
+  transform: scale(93%);
+    filter: brightness(93%);
 }
 #server {
   position:fixed;

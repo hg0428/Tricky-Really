@@ -21,7 +21,18 @@
     <div class="userprofile">
       <div class="intro">
         <img src="{{user.image}}" id="profilepic" class="profilepic"/><h1 id="username" class="username">{{name}}</h1>
-        <div class="progress"><div class="complete" id="gameprogress">{{round(user.levelsDone/totalLevels*100)}}%</div></div>
+        <div class="progress"><div class="complete" id="gameprogress">{{ round(user.levelsDone/totalLevels*100 )}}%</div></div>
+          <div>Games Played: {{ user.games }}<br/>Total Score: {{ user.score }}</div>
+          <div id="bio">
+              {{ user.bio }}
+          </div>
+          <div class="Leaderboard">
+              {% for file, section in user.completed %}
+                    {% for name, game in section %}
+                      <div class="hover-card"><span class="hover-card-name">{{ name }}</span> Played {{ game.timesPlayed }} times. Best is {{ game.score }} in {{ game.time/1000 }} seconds with {{ game.moves }} moves.</div>
+                    {% endfor %}
+              {% endfor %}
+          </div>
       </div>
     </div>
   </body>

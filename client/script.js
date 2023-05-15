@@ -131,7 +131,7 @@ function makeLeaderboard(id, users, gen) {
   for (let u of users) {
     let data = gen(u);
     if (data === false) continue;
-    code += `<div class="player" id="player-${u.name}">${data}</div>`;
+    code += `<div class="hover-card" id="player-${u.name}">${data}</div>`;
   }
   code += '</div>';
   document.body.insertAdjacentHTML("beforeend", `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`);
@@ -160,13 +160,13 @@ function levelLeaders(file, level) {
     if (u.name === user.name) {
       userclass = 'this';
     }
-    return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
+    return `<span class="hover-card-image"><img src="${u.image}"/></span><span class="hover-card-name ${userclass}">${
       u.name
       }</span> &nbsp; <span style="color:${scorecolor}">${
       data.score
       }%</span> in <span style="color:${timecolor}">${(data.time / 1000).toFixed(
         2
-      )} seconds</span>.`;
+      )} seconds</span>. Played ${data.timesPlayed} times.`;
   });
 }
 
@@ -191,7 +191,7 @@ Leaderboard.onclick = function() {
     if (u.name === user.name) {
       userclass = 'this';
     }
-    return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
+    return `<span class="hover-card-image"><img src="${u.image}"/></span><span class="hover-card-name ${userclass}">${
       u.name
       }</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(
         u.avg

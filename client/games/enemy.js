@@ -8,13 +8,16 @@ let groundImg = new Image();
 let runningLevel;
 groundImg.src = '/img/grass.jpg';
 GAMES['games/enemy.js'] = function(LEVEL) {
-    /*******SETUP********/
+    /* ******SETUP******* */
     let game = new Game('games/enemy.js', LEVEL);
     game.set('<h3 id="riddle"></h3>');
     game.loadCSS('/css/game.css');
     let Riddle = document.getElementById('riddle');
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
+    movementMult = 1;
+    playerGravity = 40;
+    onGround = 0;
     canvas.height = document.body.offsetHeight;
     canvas.width = document.body.offsetWidth;
     game.appendChild(canvas);
@@ -82,11 +85,11 @@ GAMES['games/enemy.js'] = function(LEVEL) {
                 }
             }
         },
-        'getthere': {
+        'get-there': {
             riddle: 'Find the goal.', //Ran out of ideas....
             setup: function() {
                 player = new Entity({name:'player', width:70, height:70, x:-2200, y:0, color:'green', draw:shapes.rect});
-                ground = new Entity({name:'ground', width:6000, height:200, x:100, y:canvas.height / 2 - 100, color:'green', draw:shapes.groundImage, fixed:true, physics: true});
+                ground = new Entity({name:'ground', width:6000, height:200, x:100, y: 350, color:'green', draw:shapes.groundImage, fixed:true, physics: true});
                 let goal = runningLevel.goal = new Entity({name:'goal', width:10, height:300, x:500, y:ground.top - 1000, color:'rgba(0, 255, 40, 0.8)', draw:shapes.rect});
                 let spis = [
                     [3, -2000, 'red'],
@@ -94,7 +97,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
                     [7, -1200, 'red'],
                     [8, -2400, 'red'],
                     [5, -2600, 'red'],
-                    [22, -300, 'red', 82, true]
+                    [22, -300, 'red', 100, true]
                 ]
                 for (let i in spis) {
                     spike = spis[i];
@@ -117,7 +120,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
             setup: function() {
                 playerGravity = -40;
                 player = new Entity({name:'player', width:70, height:70, x:-2200, y:0, color:'green', draw:shapes.rect});
-                ground = new Entity({name:'ground', width:6000, height:200, x:100, y:canvas.height / 2 - 100, color:'green', draw:shapes.groundImage, fixed:true, physics: true});
+                ground = new Entity({name:'ground', width:6000, height:200, x:100, y: 350, color:'green', draw:shapes.groundImage, fixed:true, physics: true});
                 runningLevel.toggle = new Entity({name:'toggle', width:50, height:50, x:2800, y:ground.bottom + 75, color:'rgba(0, 255, 40, 0.8)', draw:shapes.ellipse, fixed:true});
                 runningLevel.toggle2 = new Entity({name:'toggle2', width:50, height:50, x:100, y:ground.bottom + 75, color:'rgba(255, 40, 0, 0.8)', draw:shapes.ellipse, fixed:true});
                 let spis = [
@@ -131,6 +134,15 @@ GAMES['games/enemy.js'] = function(LEVEL) {
                 new Entity({
                     width: 200, height: 50, x: 400, y: ground.bottom + 25, color: 'black', draw: shapes.rect, fixed: true, physics: true
                 });
+                runningLevel.hint = new Entity({
+                    width: 100, 
+                    height: 50,
+                    x: 900,
+                    y: ground.bottom + 75,
+                    color: 'yellow',
+                    draw: shapes.circle,
+                    fixed: true
+                })
                 new Entity({
                     width: 500, height: 50, x: 850, y: ground.bottom + 170, color: 'black', draw: shapes.rect, fixed: true, physics: true
                 });
@@ -185,11 +197,16 @@ GAMES['games/enemy.js'] = function(LEVEL) {
                     document.getElementById('riddle').innerHTML += '<br/>Oh no! Now you inverted your movement!';
                      document.getElementById('riddle').style.fontSize = '30px';
                 }
+                if (runningLevel.hint && isOverlap(runningLevel.hint, player)) {
+                    Entities = Entities.filter(e => e !== runningLevel.hint);
+                    delete runningLevel.hint;
+                    alert('Try changing tabs and coming back.');
+                }
             }
         }
 
     }
-    /*****CLASSES*******/
+    /** ***CLASSES****** */
     class Camera {
         constructor() {
             this.offsetX = 0;
@@ -282,7 +299,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
         }
     }
 
-    /*******GLOBALS*********/
+    /* ******GLOBALS******** */
     let camera = new Camera();
     let prevFrame = 0;
     let player, ground
@@ -298,12 +315,11 @@ GAMES['games/enemy.js'] = function(LEVEL) {
         'down': true
     };
     for (let i = 0; i < imageSrcs; i++) {
-
+        //TODO: load images
     }
     runningLevel = Levels[LEVEL];
     Riddle.innerHTML = Levels[LEVEL].riddle;
     Levels[LEVEL].setup();
-
     function isOverlap(obj1, obj2) {
         return (obj1.left < obj2.right && obj1.right > obj2.left &&
             obj1.top < obj2.bottom && obj1.bottom > obj2.top);
