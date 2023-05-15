@@ -15,7 +15,7 @@
   </head>
   
   <body onload="onload()">
-      <!--<a href='javascript:(function () {var script=document.createElement("script");script.src="//cdn.jsdelivr.net/npm/eruda";document.body.appendChild(script); script.onload = function () { eruda.init() } })();'>SCIRPT</a>-->
+      <script src="//cdn.jsdelivr.net/npm/eruda" onload="eruda.init()"></script>
 		<div>
       
       {% if not loggedin %}
@@ -41,8 +41,17 @@
     <script>
       var loggedin={{loggedin}};
     </script>
+    <div id="controls" touch-enabled="false">
+      <div class="controlbtn" id="ctrl-left">←</div>
+      <div class="controlbtn" id="ctrl-up">↑</div>
+      <div class="controlbtn" id="ctrl-right">→</div>
+        <div class="controlbtn" id="ctrl-down">↓</div>
+    </div>
     <script src="script.js"></script>
     <script src="/helpers/game.js"></script>
+    <script src="games/spelling.js"></script>
+    <script src="games/enemy.js"></script>
   </body>
+  <a href="https://discord.com/invite/KqhqnHrrZJ" id="server">Our Coding Discord</a></h4>
   <a id="credits-btn" class="credits" href="/credits">Credits</a>
 </html>

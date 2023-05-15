@@ -1,4 +1,4 @@
-function startGame() {
+GAMES['games/spelling.js'] = function(LEVEL) {
   let game = new Game('games/spelling.js', LEVEL);
   let switchMode = Random.choice([['ice', 'nice', 2], ['cook', 'nook', 3]]);
   const words = {
@@ -260,4 +260,3 @@ function startGame() {
   }
   document.addEventListener('keyup', handleKeyUp); 
 }
-startGame()

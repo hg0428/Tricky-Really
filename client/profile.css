@@ -6,9 +6,9 @@ html, body {
 }
 body {
   transition: .2s;
-  margin:10px;
-  margin-top:5px;
-  color:white;
+  margin: 10px;
+  margin-top: 5px;
+  color: white;
 }
 .profilepic {
   border-radius:50%;
@@ -20,18 +20,45 @@ body {
 }
 .userprofile {
   vertical-align: top;
-  display:inline-block;
-  margin-top:40px;
+  display: inline-block;
+  margin-top: 40px;
 }
 .userprofile #profilepic {
-  width:130px;
-  height:130px;
-  margin:20px;
+  width: 130px;
+  height: 130px;
+  margin: 20px;
 }
 .userprofile #username{
-  font-size:2.3rem;
-  display:inline-block;
+  font-size: 2.3rem;
+  display: inline-block;
 }
 .userprofile .intro {
-  margin-left: 8vw;
+  margin-left: 3vw;
+}
+.progress {
+  margin-left: 2vw;
+  border-radius: 13px;
+  width: 300px;
+  height: 30px;
+  border: 1px solid white;
+  position: relative;
+  display: inline-block;
+}
+.progress .complete {
+  text-align: center;
+  position: relative;
+  background-color: green;
+  border-radius: 13px;
+  height: 30px;
+  line-height: 28px;
+  font-weight: bold;
+}
+@media (max-width: 800px) {
+  .userprofile .intro {
+    margin-left: unset;
+    margin: auto;
+  }
+  .progress {
+    margin-left: unset;
+  }
 }

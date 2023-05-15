@@ -12,10 +12,16 @@
     <link rel="manifest" href="/site.webmanifest">
   </head>
   <body>
+    <style>
+      #gameprogress {
+        width: {{user.levelsDone/totalLevels*100}}%;
+      }
+    </style>
+    
     <div class="userprofile">
       <div class="intro">
         <img src="{{user.image}}" id="profilepic" class="profilepic"/><h1 id="username" class="username">{{name}}</h1>
-        <div id="progress" class="progress">{{user.levelsDone/totalLevels*100}}%<div class="complete" width="{{user.levelsDone/totalLevels}}%"></div></div>
+        <div class="progress"><div class="complete" id="gameprogress">{{round(user.levelsDone/totalLevels*100)}}%</div></div>
       </div>
     </div>
   </body>

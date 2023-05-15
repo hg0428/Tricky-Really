@@ -8,10 +8,11 @@ canvas {
   position:fixed;
 }
 #riddle {
-  background: lightblue;
+  background: transparent/*rgb(108, 136, 221)*/;
   height: 50px;
   position: fixed;
   z-index: 100;
   top:10px;
   left:10px;
+  font-size: 20px;
 }

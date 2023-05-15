@@ -1,5 +1,5 @@
 //https://nodejs.org/api/worker_threads.html
-//Stupid stuff
+//Meaningless stuff
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { fileURLToPath } from 'url';
@@ -19,13 +19,13 @@ const child = fork(`${__dirname}/leaderboard.js`);
 + Always On + Boost ✅
 + Add multi-level support for platformers ✅
 + Make the platformer longer.
-+ Add more platformer levels. 
-+ Mobile support for platfomer. 
++ Add more platformer levels. ⚠️
++ Mobile support for platfomer.  ✅
 + Sort levels ✅
 + Button to go home, to retry, and next level ✅
-+ Useless functions
-+ Clicker section
-+ Math section
++ Useless functions (buttons that do nothing)
++ Clicker section (what should the trick be?)
++ Math section (what should the trick be?)
 + Profiles with /@username ⚠️
 */
 console.log('ON')
@@ -123,11 +123,25 @@ var Online = {};
 var UnameToUid = {};
 var Leaderboards = {};
 var clientUsers = {}
+var GamesRevert = JSON.parse(fs.readFileSync('GamesRevert.json', 'utf8'));
+var Games;
 try {
-  var Games = JSON.parse(fs.readFileSync('Games.json', 'utf8'));
+  Games = JSON.parse(fs.readFileSync('Games.json', 'utf8'));
 } catch {
-  var Games = JSON.parse(fs.readFileSync('GamesRevert.json', 'utf8'));
+    Games = GamesRevert;
 }
+for (let section in GamesRevert) {
+    let sect = GamesRevert[section];
+    if (!Object.keys(Games).includes(section))
+        Games[section] = sect;
+    for (let level in sect.levels) {
+        if (!Object.keys(Games[section]).includes(level))
+            Games[section][level] = sect.levels[level];
+        Games[section][level].requiredCompletes = sect.levels[level].requiredCompletes; //Data that doesn't change
+        Games[section][level].avgTime = sect.levels[level].avgTime; //Data that doesn't change
+    }
+}
+saveGames();;
 var GameFiles = Object.keys(Games);
 var totalLevels = 0;
 for (let f of GameFiles) {
@@ -187,25 +201,16 @@ nunjucks.configure('client', {
   autoescape: true,
   express: app
 });
-
-// Home Page
-app.get('/', async function(req, res) {
-  let uID = req.get('X-Replit-User-Id');
-  let Uname = req.get('X-Replit-User-Name');
-  let Uroles = req.get('X-Replit-User-Roles');
-  let Uteams = req.get('X-Replit-User-Teams');
-  let loggedin = false;
-  if (uID) {
-    loggedin = true;
-    let user = await db.get(uID);
+async function registerUser(id, name, roles, teams) {
+    let user = await db.get(id);
     if (!(user)) {
-      let data = await getUserData(Uname);
-      console.log('New User', Uname)
+      let data = await getUserData(name);
+      console.log('New User', name)
       let user = {
-        id: uID,
-        name: Uname,
-        roles: Uroles,
-        teams: Uteams,
+        id: id,
+        name: name,
+        roles: roles,
+        teams: teams,
         games: 0,
         score: 0,
         currentGame: false,
@@ -220,10 +225,21 @@ app.get('/', async function(req, res) {
         realName: data.fullName,
         levelsDone: 0,
       }
-      child.send({ event: 'newuser', uID: uID, User: setUser(uID, user)});
-      db.set(uID, user).then(() => { });
-      USERS[uID] = user;
+      child.send({ event: 'newuser', uID: id, User: setUser(id, user)});
+      db.set(id, user).then(() => { });
+      USERS[id] = user;
     }
+}
+// Home Page
+app.get('/', async function(req, res) {
+  let uID = req.get('X-Replit-User-Id');
+  let Uname = req.get('X-Replit-User-Name');
+  let Uroles = req.get('X-Replit-User-Roles');
+  let Uteams = req.get('X-Replit-User-Teams');
+  let loggedin = false;
+  if (uID) {
+    await registerUser(uID, Uname, Uroles, Uteams);
+    loggedin = true;
   }
   res.render('index.html', {
     loggedin: loggedin,
@@ -237,6 +253,7 @@ app.get('/@:name', async function(req, res) {
     name: req.params.name,
     user: clientUsers[UnameToUid[req.params.name]],
     totalLevels:totalLevels,
+    round: Math.round
   })
 });
 
@@ -250,9 +267,15 @@ httpserver.listen(3000);
 
 //Sockets
 io.on('connection', async (socket) => {
-  let uID = socket.handshake.headers['x-replit-user-id'];
+  let headers = socket.handshake.headers;
+  let uID = headers['x-replit-user-id'];
   let user = USERS[uID];
-  Online[uID] = user.name;
+  if (!user) {
+    registerUser(headers['x-replit-user-id'], headers['x-replit-user-name'], headers['x-replit-user-roles'], headers['x-replit-user-teams']);
+    user = USERS[uID];
+  }
+  Online[uID] = headers['x-replit-user-name'];
+  user = USERS[uID];
   let unlockedGames = {};
   //Find which levels are locked for this user
   for (let file in Games) {

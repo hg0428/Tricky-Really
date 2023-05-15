@@ -1,4 +1,4 @@
-var LEVEL, ready, user;
+var LEVEL, ready, user, FILE;
 let socket;
 var MusicOn = false;
 const START = document.getElementById('START');
@@ -6,6 +6,7 @@ const Select = document.getElementById('select');
 const Leaderboard = document.getElementById('leaderboard');
 const status = document.getElementById('status');
 var Games, Leaderboards;
+var GAMES = {}; //A object of game file to start function.
 
 function initSocket() {
   if (!loggedin) return null;
@@ -25,7 +26,14 @@ function initSocket() {
     });
   }
 }
-
+function returnToHome() {
+  let gametest = document.getElementById('GAME');
+  if (gametest) gametest.remove();
+  let over = document.getElementsByClassName('overcontroller');
+  for (let o of over) {
+    o.style.display = 'none';
+  }
+}
 function GameOn() {
   let gametest = document.getElementById('GAME');
   if (gametest) gametest.remove();
@@ -33,10 +41,7 @@ function GameOn() {
 }
 
 function onBack() {
-  let over = document.getElementsByClassName('overcontroller');
-  for (let o of over) {
-    o.style.display = 'none';
-  }
+  returnToHome();
 }
 
 START.onclick = function() {
@@ -57,11 +62,10 @@ function loadLevel(file, level) {
     return alert('Waiting for page to load.');
   }
   LEVEL = level;
-  let myScript = document.createElement('script');
-  myScript.setAttribute('src', file);
-  document.body.appendChild(myScript);
+  FILE = file;
   GameOn();
   socket.emit('loadGame', file, level);
+  GAMES[file](level);
 }
 Select.onclick = function() {
   console.log('ONCLICK');
@@ -124,13 +128,18 @@ function makeLeaderboard(id, users, gen) {
   }
   let code =
     '<button onclick="onBack();" class="back">Back</button><br/><br/><br/><br/><div class="Leaderboard">';
-  for (u of users) {
+  for (let u of users) {
     let data = gen(u);
     if (data === false) continue;
-    code += `<div class="player">${data}</div>`;
+    code += `<div class="player" id="player-${u.name}">${data}</div>`;
   }
   code += '</div>';
   document.body.insertAdjacentHTML("beforeend", `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`);
+  for (let u of users) {
+    document.getElementById(`player-${u.name}`).onclick = () => {
+      window.location.href = `/@${u.name}`;
+    }
+  }
 }
 function levelLeaders(file, level) {
   users = Leaderboards[file][level];
@@ -153,7 +162,7 @@ function levelLeaders(file, level) {
     }
     return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
       u.name
-      }:</span> &nbsp; <span style="color:${scorecolor}">${
+      }</span> &nbsp; <span style="color:${scorecolor}">${
       data.score
       }%</span> in <span style="color:${timecolor}">${(data.time / 1000).toFixed(
         2
@@ -184,7 +193,7 @@ Leaderboard.onclick = function() {
     }
     return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
       u.name
-      }:</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(
+      }</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(
         u.avg
       )}% average</span>, &nbsp;<span style="color:${gamescolor};">${
       u.games
