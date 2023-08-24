@@ -1,20 +1,3 @@
 {
-  "files": {
-    "GamesRevert.json": [
-      {
-        "id": "6f5c852b-ec7d-4e43-9114-f23b7905906f",
-        "line": 16,
-        "version": 139,
-        "index": 337
-      }
-    ],
-    "index.js": [
-      {
-        "id": "f4cffa0e-c9b6-47fd-b847-d3294fdae092",
-        "line": 455,
-        "version": 13364,
-        "index": 14878
-      }
-    ]
-  }
+  "files": {}
 }

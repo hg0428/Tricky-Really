@@ -68,7 +68,7 @@ function loadLevel(file, level) {
   GAMES[file](level);
 }
 Select.onclick = function() {
-  console.log('ONCLICK');
+  //console.log('ONCLICK');
   let premade = document.getElementById('selectLevel');
   if (premade) {
     return premade.style.display = 'block';
@@ -216,7 +216,7 @@ window.oncontextmenu = e => {
   e.preventDefault();
 };
 document.addEventListener('keydown', function(event) {
-  playMusic()
+  playMusic();
   var key = event.key || event.keyCode;
   if (key == 17) {
     return false;
@@ -232,7 +232,6 @@ document.addEventListener('touchstart', playMusic);
 window.addEventListener('onload', function() {
   Object.keys(window).forEach(key => {
     if (/^on/.test(key)) {
-      console.log(key);
       window.addEventListener(key.slice(2), playMusic);
     }
   });

@@ -156,10 +156,13 @@ button.center:hover {
 button.center:active {
   transform: translate(-50%, -50%) scale(0.96);
 }
-input {
-  padding: 1rem;
+#box {
+  padding: 0.9rem;
   margin: 0.8rem;
   font-size: 1.4rem;
+  border: 5px solid #E4E663;
+  outline: 10px solid #8BD5AF;
+  border-radius: 0;
 }
 #submit {
   padding: 1rem;
@@ -307,8 +310,10 @@ input {
   -ms-backdrop-filter: blur(7px);
   background-color: rgba(205, 202, 175, 0.85);
   border: 3px solid rgba(195, 192, 165, 0.92);
-  width: 80px;
-  height: 80px;
+  max-width: 80px;
+  max-height: 80px;
+    width: 10vw;
+    height: 10vw;
   position: static;
   margin: 10px;
   text-align:center;
@@ -358,4 +363,12 @@ input {
 #server:hover {
   transform: scale(1.21);
   text-shadow: 5px 5px 1px rgba(0,0,0,0.3);
+}
+#quit-btn {
+  background-color: red;
+  border-radius: 1%;
+  z-index: 100;
+  position: fixed;
+  top: 5px;
+  right: 5px;
 }

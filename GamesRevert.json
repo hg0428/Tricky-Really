@@ -99,12 +99,26 @@
         "requiredCompletes": []
     },
       "upsidedown": {
-        "avgTime": 2500,
+        "avgTime": 20500,
         "recordTime": 5847,
         "worstTime": 11473,
         "moves": 9999,
         "requiredCompletes": ["vinde", "get-there"]
-    }
+    },
+    "up-down-all-around": {
+        "avgTime": 20500,
+        "recordTime": 5847,
+        "worstTime": 11473,
+        "moves": 9999,
+        "requiredCompletes": []
+    },
+      "Obstacle Course": {
+        "avgTime": 100000,
+        "recordTime": 999999,
+        "worstTime": 0,
+        "moves": 99899,
+        "requiredCompletes": ["up-down-all-around"]
+      }
     }
   }
 }

@@ -21,14 +21,17 @@ const child = fork(`${__dirname}/leaderboard.js`);
 + Add multi-level support for platformers ✅
 + Make the platformer longer. ✅
 + Add more platformer levels. ⚠️
++ Fix jump and fall bug on camera panning levels
 + Mobile support for platfomer. ✅
 + Sort levels ✅
 + Button to go home, to retry, and next level ✅
 + Useless functions (buttons that do nothing) ❔
 + Clicker section (what should the trick be?) ❔
 + Math section (what should the trick be?) ❔
-+ Profiles with /@username ⚠️
-  - Have logos for games or for sections.
++ Complex Pattern Finding section (not obvious, multileveled)
++ Profiles with /@username ✅ (⚠️?????)
+  - Have logos for games or for sections. ✅
++ Game Controller Support
 */
 console.log('ON')
 
@@ -226,10 +229,10 @@ async function registerUser(id, name, roles, teams) {
                 file: null,
                 level: null
             },
-            profilepic: data.image,
-            bio: data.bio,
-            isVerified: data.isVerified,
-            realName: data.fullName,
+            profilepic: data.image || null,
+            bio: data.bio || null,
+            isVerified: data.isVerified || null,
+            realName: data.fullName || null,
             levelsDone: 0,
         }
         child.send({ event: 'newuser', uID: id, User: setUser(id, user) });
@@ -406,7 +409,7 @@ io.on('connection', async (socket) => {
         }
         moves = Math.max(moves, game.moves || 0);
         score = Math.min(score, 100);
-        if (score <= 0) return;
+        if (score < 0) return;
         time = Math.max(time, 0);
         let calcTime = end - game.start;
         //Set the min time to the calculated time - 300
@@ -440,10 +443,7 @@ io.on('connection', async (socket) => {
         } else if (time > Games[game.file].levels[game.level].worstTime) {
             Games[game.file].levels[game.level].worstTime = time;
         }
-        if (score > 0) {
-            child.send({ event: 'updateuser', uID: uID, game: game, result: user.completed[game.file][game.level] });
-            sortLeaderboard(game.file, game.level);
-        }
+        child.send({ event: 'updateuser', uID: uID, game: game, result: user.completed[game.file][game.level] });
 
         user.currentGame = false;
         setUser(uID, user);
