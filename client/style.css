@@ -3,7 +3,6 @@ html, body {
   font-family: Helvetica, Arial;
   width:100%;
   height:100%;
-  overflow-x:hidden;
   background-color:rgb(108, 136, 221);
 }
 body {
@@ -37,6 +36,12 @@ body {
 .game-levels li:hover {
   text-decoration:underline;
 }
+.game-levels li.locked {
+  color:rgb(40, 100, 120);
+}
+.game-levels li.locked:hover {
+  text-decoration:none;
+}
 .scores {
   display: inline-block;
 }
@@ -56,6 +61,11 @@ body {
   padding-right: 0.8em;
 }
 #select, #leaderboard, #username {
+  -webkit-user-drag: none; 
+  -khtml-user-drag: none; 
+  -moz-user-drag: none; 
+  -o-user-drag: none; 
+  user-drag: none; 
   margin: 0.6em;
   margin-top: 0.5em;
   transition: .2s;
@@ -74,7 +84,7 @@ body {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.75);
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -92,6 +102,11 @@ body {
   visibility: visible;
 }
 button, input[type=button],input[type=file]::file-selector-button {
+  -webkit-user-drag: none; 
+  -khtml-user-drag: none; 
+  -moz-user-drag: none; 
+  -o-user-drag: none; 
+  user-drag: none; 
 	font-weight: bold;
 	-webkit-appearance: none;
 	appearance: none;
@@ -107,13 +122,17 @@ button, input[type=button],input[type=file]::file-selector-button {
   background-color: #8BD5AF;
   border: 0.5em solid black;
   text-align: center;
+  padding-top:5px;
+  padding-bottom:5px;
 }
 button:hover, input[type=button]:hover, input[type=file]::file-selector-button:hover {
+  cursor: pointer;
 	-webkit-appearance: none;
 	appearance: none;
 	transform: scale(1.02);
 }
 button:active, input[type=button]:active,input[type=file]::file-selector-button:active{
+  cursor: pointer;
 	transform: scale(0.97);
 }
 .center {
@@ -143,6 +162,13 @@ input {
   height: 100px;
   font-size: 2rem;
 }
+.large {
+  width: 225px;
+  height: 75px;
+  font-size: 1.5rem;
+  padding:0;
+  margin:15px;
+}
 .locked {
   filter: blur(0.01em) brightness(80%);
   backdrop-filter: blur(0.01em) brightness(80%);
@@ -153,7 +179,104 @@ input {
   padding: 5px;
 }
 .continue {
-  height:110px;
-  width:315px;
+  height:120px;
+  width:320px;
   padding:0;
+}
+.credits {
+  position: absolute;
+  bottom:10px;
+  left:10px;
+}
+#credits-btn {
+  position:fixed;
+  bottom:30px;
+  left:30px;
+  padding:5px;
+  font-size:1.35rem;
+  color:rgb(80, 200, 240);
+  /*border-radius:50%;*/
+  transition:.2s;
+  text-decoration:none;
+}
+#credits-btn:hover {
+  transform: scale(1.3);
+  text-shadow: -5px 5px 1px rgba(0,0,0,0.3);
+}
+#hidden {
+  position:fixed;
+  z-index:-999;
+  opacity:0;
+  width:100%;
+  height:100%;
+}
+.Leaderboard {
+  height: auto;
+  /*border: 1px solid #AFAFAF;*/
+}
+.Leaderboard .player {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 50px;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  /*border-bottom: 1px solid #AFAFAF;*/
+}
+.Leaderboard .player .player-name {
+  font-weight:bold;
+  width: 200px;
+  position: relative;
+  display: inline-block;
+  line-height: 45px;
+  color:white;
+  font-size:1.125rem;
+  vertical-align:middle;
+}
+.Leaderboard .player .player-image {
+  width: 50px;
+  position: relative;
+  display: inline-block;
+  line-height: 45px;
+  vertical-align:middle;
+}
+.Leaderboard .player .player-image img {
+  border-radius:50%;
+  width:35px;
+  height:35px;
+  border:none;
+  vertical-align:middle;
+}
+
+.Leaderboard .player .player-name.this {
+  font-weight:800;
+  font-size:1.25rem;
+  color:green;
+}
+
+@keyframes rotateImg {
+  0% {transform: rotate(-15deg);}
+  100% {transform: rotate(15deg);}
+}
+
+#logoImg { /*Remove this if you want, I think it looks cool lol*/
+  /*Yes it does
+  I changed the svg to make it look fine.
+  Thanks for adding it.
+  */
+  width: 60%;
+  min-width:350px;
+  animation: rotateImg 3s alternate infinite;
+}
+.overcontroller {
+  position:fixed;
+  overflow:scroll;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgb(108, 136, 221);
+  z-index:20;
 }

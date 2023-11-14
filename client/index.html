@@ -7,9 +7,9 @@
     <script src="/helpers/interface.js"></script>
     <link href="/style.css" rel="stylesheet" type="text/css" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="socket.io/socket.io.js"></script>
     
   </head>
@@ -36,7 +36,7 @@
       {% endif %}
     </div>
     <center>
-      <img src="/img/logo.svg" width="60%"/>
+      <img id="logoImg" src="/img/logo.svg"/>
     </center>
     <script>
       var loggedin={{loggedin}};
@@ -44,4 +44,5 @@
     <script src="script.js"></script>
     <script src="/helpers/game.js"></script>
   </body>
+  <a id="credits-btn" class="credits" href="/credits">Credits</a>
 </html>

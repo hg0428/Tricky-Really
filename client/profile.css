@@ -1,0 +1,37 @@
+html, body {
+  font-family: Helvetica, Arial;
+  width:100%;
+  height:100%;
+  background-color:rgb(108, 136, 221);
+}
+body {
+  transition: .2s;
+  margin:10px;
+  margin-top:5px;
+  color:white;
+}
+.profilepic {
+  border-radius:50%;
+  display:inline-block;
+  width:35px;
+  height:35px;
+  border:none;
+  vertical-align:middle;
+}
+.userprofile {
+  vertical-align: top;
+  display:inline-block;
+  margin-top:40px;
+}
+.userprofile #profilepic {
+  width:130px;
+  height:130px;
+  margin:20px;
+}
+.userprofile #username{
+  font-size:2.3rem;
+  display:inline-block;
+}
+.userprofile .intro {
+  margin-left: 8vw;
+}
