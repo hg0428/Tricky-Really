@@ -1,21 +1,67 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>{{name}} — Tricky Really</title>
     <script src="/helpers/interface.js"></script>
     <link href="/profile.css" rel="stylesheet" type="text/css" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
   </head>
   <body>
+    <script>
+      function historyBackWFallback(fallbackUrl) {
+        fallbackUrl = fallbackUrl || '/';
+        var prevPage = window.location.href;
+    
+        window.history.go(-1);
+    
+        setTimeout(function(){ 
+            if (window.location.href == prevPage) {
+                window.location.href = fallbackUrl; 
+            }
+        }, 500);
+    }
+    </script>
+    <style>
+      #gameprogress {
+        width: {{user.levelsDone/totalLevels*100}}%;
+      }
+    </style>
+    <button onclick="historyBackWFallback('https://tricky-really-dev.hg0428.repl.co');" class="back">Back</button>
+    <br/>
+    <br/>
     <div class="userprofile">
       <div class="intro">
-        <img src="{{user.image}}" id="profilepic" class="profilepic"/><h1 id="username" class="username">{{name}}</h1>
-        <div id="progress" class="progress">{{user.levelsDone/totalLevels*100}}%<div class="complete" width="{{user.levelsDone/totalLevels}}%"></div></div>
+        <img src="{{user.image}}" id="profilepic" class="profilepic" />
+        <h1 id="username" class="username">{{name}}</h1>
+        <div class="progress">
+          <div class="complete" id="gameprogress">
+            {{ round(user.levelsDone/totalLevels*100 )}}%
+          </div>
+        </div>
+        <div id="bio">{{ user.bio }}</div>
+        <div style="font-weight:bold;font-size:1.1rem;line-height:1.64rem;">
+          Games Played: {{ user.games }}<br />Total Score: {{ user.score }}
+        </div>
+        <div class="Leaderboard">
+          {% for file, section in user.completed %} {% for name, game in section
+          %}
+          <div class="hover-card">
+            {% if file == "games/spelling.js" %}
+            <img class="section-icon" src="/img/spell.jpeg" alt="Spell"/>
+            {% elif file == "games/enemy.js" %}
+            <img class="section-icon" src="/img/enemy.jpeg" alt="Enemy"/>
+            {% endif %}
+            <span class="hover-card-name">{{ name }}</span> Played {{
+            game.timesPlayed }} times. Best is {{ game.score }}% in {{
+            game.time/1000 }}s with {{ game.moves }} moves.
+          </div>
+          {% endfor %} {% endfor %}
+        </div>
       </div>
     </div>
   </body>

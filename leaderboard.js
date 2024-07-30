@@ -60,11 +60,10 @@ function sortLeaderboard(file, levelName) {
     return u.completed[file] && u.completed[file][levelName];
   });
   Leaderboards[file][levelName].sort((u1, u2) => {
-    return (
-      (u2.completed[file][levelName].score -
-        u2.completed[file][levelName].time) -
-      (u1.completed[file][levelName].score - u1.completed[file][levelName].time)
-    );
+    let val2 = (u2.completed[file][levelName].score -
+        u2.completed[file][levelName].time)
+    let val1 = (u1.completed[file][levelName].score - u1.completed[file][levelName].time)
+    return (val2 - val1);
   });
 }
 function sortOverall() {
@@ -72,6 +71,7 @@ function sortOverall() {
     return u.levelsDone > 0;
   });
   Leaderboards.overall.sort((u1, u2) => {
+    //Todo: take into account whether the level was completed successfully or unsuccessfully.
     let sum1 = 0, sum2 = 0;
     let amt1 = 0, amt2 = 0;
     for (let file in u1.completed) {
@@ -88,7 +88,7 @@ function sortOverall() {
         amt2++;
       }
     }
-    return ((sum2 / (amt2 - 1)) + amt2) - ((sum1 / (amt1 - 1)) + amt1);
+    return ((sum2 / (amt2 - 1)) + 2000*amt2) - ((sum1 / (amt1 - 1)) + 2000*amt1);
   });
   process.send({ Leaderboards: Leaderboards })
 }

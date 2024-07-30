@@ -13,10 +13,22 @@ class Game {
     this.score = 0;
     this.socket = socket;
     this.document = document.getElementById('GAME');
+    this.onend = null;
+    this.quit;
   }
   start() {
     this.running = true;
     this.startTime = Date.now();
+    this.quit = document.createElement('button');
+    let game = this;
+    this.quit.onclick = function() {
+      console.log('Click!');
+      game.complete();
+      game.Continue('You Gave Up!', 'red', 'Better luck next time!', game);
+    };
+    this.quit.innerText = 'Quit';
+    this.quit.setAttribute('id', 'quit-btn');
+    document.getElementById("GAME").appendChild(this.quit);
   }
   append(html) {
     this.document.innerHTML += html;
@@ -36,14 +48,19 @@ class Game {
   }
   color(color) {
     this.document.style.background = color;
-  } 
+  }
   complete() {
     if (this.running) {
-      this.running = false;
       this.endTime = Date.now();
-      console.log(this.score, this.time, this.moves);
       this.socket.emit('complete', this.score, this.time, this.moves);
+      if (this.onend) {
+        this.onend();
+      }
     }
+    this.running = false;
+    FILE = null;
+    LEVEL = null;
+    this.quit.remove();
   } Continue(msg, color, h2, game) {
     if (h2) h2 = `<h2>${h2}</h2>`;
     this.set(`<div class="center" style="color:${color}"><center><h1>${msg}</h1>${h2}</center><br/><center><button class="extraLarge continue" id="continue" onclick="onBack();">CONTINUE</button><br/><button onclick="" class="large" id="next-btn">Next Level</button><button onclick="" class="large" id="retry-btn">Retry Level</button></center></div>`);

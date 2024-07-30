@@ -281,6 +281,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
           }
         };
         document.addEventListener('keyup', runningLevel.keyupListener);
+          alert('Press G to invert gravity.')
       },
       eachFrame: function(elapsed) {
         if (!runningLevel.hint1Given && isOverlap(runningLevel.faithTrigger, player)) {
@@ -335,10 +336,10 @@ GAMES['games/enemy.js'] = function(LEVEL) {
         let platform = new Entity({ color: 'black', width: 150, height: topstair.height, physics: true, y: topstair.y - 100, fixed: true }).setLeft(end.left + 200);
         let hightopstair = createStairs(platform.top + 8, platform.right, 1800, 2290, { physics: true, fixed: true, numSteps: 105, reverse: true, horizontalDirection: 'right', verticalDirection: 'down' });
         let plats = [];
-        plats.push(new Entity({color:'black', width:180, height:hightopstair.height, fixed:true, physics:true}).setLeft(hightopstair.right).setTop(hightopstair.top));
-        plats.push(new Entity({color:'black', width:300, height:hightopstair.height, fixed:true, physics:false}).setLeft(plats[0].right).setTop(plats[0].top));
-        plats.push(new Entity({color:'black', width:300, height:hightopstair.height, fixed:true, physics:true}).setLeft(plats[1].right).setTop(plats[1].top));
-        plats.push(createStairs(plats[2].top + 8, plats[2].right, runningLevel.goal.left-plats[2].right, runningLevel.goal.y-200-plats[2].top, { physics: true, fixed: true, numSteps: 100, reverse: true, horizontalDirection: 'right', verticalDirection: 'up' }));
+        plats.push(new Entity({ color: 'black', width: 180, height: hightopstair.height, fixed: true, physics: true }).setLeft(hightopstair.right).setTop(hightopstair.top));
+        plats.push(new Entity({ color: 'black', width: 300, height: hightopstair.height, fixed: true, physics: false }).setLeft(plats[0].right).setTop(plats[0].top));
+        plats.push(new Entity({ color: 'black', width: 300, height: hightopstair.height, fixed: true, physics: true }).setLeft(plats[1].right).setTop(plats[1].top));
+        plats.push(createStairs(plats[2].top + 8, plats[2].right, runningLevel.goal.left - plats[2].right, runningLevel.goal.y - 200 - plats[2].top, { physics: true, fixed: true, numSteps: 100, reverse: true, horizontalDirection: 'right', verticalDirection: 'up' }));
         //createStairs() //from the ^^ to a maze thing or something
       },
       eachFrame: function(elapsed) {
@@ -530,7 +531,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
   }
   /* ******GLOBALS******** */
   let camera = new Camera();
-  
+
   Entities.splice(0, Entities.length);
   Entities.length = 0;
   spikes.splice(0, spikes.length);

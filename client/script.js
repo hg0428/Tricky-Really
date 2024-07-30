@@ -1,4 +1,4 @@
-var LEVEL, ready, user;
+var LEVEL, ready, user, FILE;
 let socket;
 var MusicOn = false;
 const START = document.getElementById('START');
@@ -6,6 +6,7 @@ const Select = document.getElementById('select');
 const Leaderboard = document.getElementById('leaderboard');
 const status = document.getElementById('status');
 var Games, Leaderboards;
+var GAMES = {}; //A object of game file to start function.
 
 function initSocket() {
   if (!loggedin) return null;
@@ -25,7 +26,14 @@ function initSocket() {
     });
   }
 }
-
+function returnToHome() {
+  let gametest = document.getElementById('GAME');
+  if (gametest) gametest.remove();
+  let over = document.getElementsByClassName('overcontroller');
+  for (let o of over) {
+    o.style.display = 'none';
+  }
+}
 function GameOn() {
   let gametest = document.getElementById('GAME');
   if (gametest) gametest.remove();
@@ -33,10 +41,7 @@ function GameOn() {
 }
 
 function onBack() {
-  let over = document.getElementsByClassName('overcontroller');
-  for (let o of over) {
-    o.style.display = 'none';
-  }
+  returnToHome();
 }
 
 START.onclick = function() {
@@ -57,14 +62,13 @@ function loadLevel(file, level) {
     return alert('Waiting for page to load.');
   }
   LEVEL = level;
-  let myScript = document.createElement('script');
-  myScript.setAttribute('src', file);
-  document.body.appendChild(myScript);
+  FILE = file;
   GameOn();
   socket.emit('loadGame', file, level);
+  GAMES[file](level);
 }
 Select.onclick = function() {
-  console.log('ONCLICK');
+  //console.log('ONCLICK');
   let premade = document.getElementById('selectLevel');
   if (premade) {
     return premade.style.display = 'block';
@@ -124,13 +128,18 @@ function makeLeaderboard(id, users, gen) {
   }
   let code =
     '<button onclick="onBack();" class="back">Back</button><br/><br/><br/><br/><div class="Leaderboard">';
-  for (u of users) {
+  for (let u of users) {
     let data = gen(u);
     if (data === false) continue;
-    code += `<div class="player">${data}</div>`;
+    code += `<div class="hover-card" id="player-${u.name}">${data}</div>`;
   }
   code += '</div>';
   document.body.insertAdjacentHTML("beforeend", `<div class="overcontroller" id="leaderboard-${id}">${code}</div>`);
+  for (let u of users) {
+    document.getElementById(`player-${u.name}`).onclick = () => {
+      window.location.href = `/@${u.name}`;
+    }
+  }
 }
 function levelLeaders(file, level) {
   users = Leaderboards[file][level];
@@ -151,13 +160,13 @@ function levelLeaders(file, level) {
     if (u.name === user.name) {
       userclass = 'this';
     }
-    return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
+    return `<span class="hover-card-image"><img src="${u.image}"/></span><span class="hover-card-name ${userclass}">${
       u.name
-      }:</span> &nbsp; <span style="color:${scorecolor}">${
+      }</span> &nbsp; <span style="color:${scorecolor}">${
       data.score
       }%</span> in <span style="color:${timecolor}">${(data.time / 1000).toFixed(
         2
-      )} seconds</span>.`;
+      )} seconds</span>. Played ${data.timesPlayed} times.`;
   });
 }
 
@@ -182,9 +191,9 @@ Leaderboard.onclick = function() {
     if (u.name === user.name) {
       userclass = 'this';
     }
-    return `<span class="player-image"><img src="${u.image}"/></span><span class="player-name ${userclass}">${
+    return `<span class="hover-card-image"><img src="${u.image}"/></span><span class="hover-card-name ${userclass}">${
       u.name
-      }:</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(
+      }</span> &nbsp;<span style="color:${avgcolor};">${Math.floor(
         u.avg
       )}% average</span>, &nbsp;<span style="color:${gamescolor};">${
       u.games
@@ -207,7 +216,7 @@ window.oncontextmenu = e => {
   e.preventDefault();
 };
 document.addEventListener('keydown', function(event) {
-  playMusic()
+  playMusic();
   var key = event.key || event.keyCode;
   if (key == 17) {
     return false;
@@ -223,7 +232,6 @@ document.addEventListener('touchstart', playMusic);
 window.addEventListener('onload', function() {
   Object.keys(window).forEach(key => {
     if (/^on/.test(key)) {
-      console.log(key);
       window.addEventListener(key.slice(2), playMusic);
     }
   });

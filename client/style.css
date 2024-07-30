@@ -1,17 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato&family=Press+Start+2P&display=swap');
+:root {
+  touch-action: pan-x pan-y;
+  height: 100% 
+}
 html, body {
   font-family: Helvetica, Arial;
   width:100%;
   height:100%;
   background-color:rgb(108, 136, 221);
+    margin: 0;
+    overflow: hidden;
 }
 body {
   transition: .2s;
-  margin:10px;
-  margin-top:5px;
   color:white;
 }
 #START {
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  touch-action: none;
   background-color: transparent;
 	background-image: url("/img/start.svg");
 	background-size: 100% 100%;
@@ -61,6 +68,7 @@ body {
   padding-right: 0.8em;
 }
 #select, #leaderboard, #username {
+  touch-action: none;
   -webkit-user-drag: none; 
   -khtml-user-drag: none; 
   -moz-user-drag: none; 
@@ -68,10 +76,11 @@ body {
   user-drag: none; 
   margin: 0.6em;
   margin-top: 0.5em;
-  transition: .2s;
+  transition: .25s;
+  border-radius: 8px;
 }
 #select:hover, #leaderboard:hover {
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 #select:active, #leaderboard:active {
   transform: scale(0.97);
@@ -142,15 +151,18 @@ button:active, input[type=button]:active,input[type=file]::file-selector-button:
   transform: translate(-50%, -50%);
 }
 button.center:hover {
-  transform: translate(-50%, -50%) scale(1.02);
+  transform: translate(-50%, -50%) scale(1.05);
 }
 button.center:active {
-  transform: translate(-50%, -50%) scale(0.97);
+  transform: translate(-50%, -50%) scale(0.96);
 }
-input {
-  padding: 1rem;
+#box {
+  padding: 0.9rem;
   margin: 0.8rem;
   font-size: 1.4rem;
+  border: 5px solid #E4E663;
+  outline: 10px solid #8BD5AF;
+  border-radius: 0;
 }
 #submit {
   padding: 1rem;
@@ -185,13 +197,13 @@ input {
 }
 .credits {
   position: absolute;
-  bottom:10px;
-  left:10px;
+  bottom: 10px;
+  left: 10px;
 }
 #credits-btn {
   position:fixed;
   bottom:30px;
-  left:30px;
+  left: 25px;
   padding:5px;
   font-size:1.35rem;
   color:rgb(80, 200, 240);
@@ -200,7 +212,7 @@ input {
   text-decoration:none;
 }
 #credits-btn:hover {
-  transform: scale(1.3);
+  transform: scale(1.25);
   text-shadow: -5px 5px 1px rgba(0,0,0,0.3);
 }
 #hidden {
@@ -212,20 +224,30 @@ input {
 }
 .Leaderboard {
   height: auto;
+  padding: 20px;
   /*border: 1px solid #AFAFAF;*/
 }
-.Leaderboard .player {
+.Leaderboard .hover-card {
   position: relative;
   display: block;
-  width: 100%;
+  width: calc(100% - 30px);
   height: 50px;
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+  border-radius: 10px;
+  transition: 0.4s;
+  padding: 10px;
   /*border-bottom: 1px solid #AFAFAF;*/
 }
-.Leaderboard .player .player-name {
+.Leaderboard .hover-card:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  backdrop-filter: brightness(85%);
+  -webkit-backdrop-filter: brightness(94%);
+}
+.Leaderboard .hover-card .hover-card-name {
   font-weight:bold;
   width: 200px;
   position: relative;
@@ -235,14 +257,14 @@ input {
   font-size:1.125rem;
   vertical-align:middle;
 }
-.Leaderboard .player .player-image {
+.Leaderboard .hover-card .hover-card-image {
   width: 50px;
   position: relative;
   display: inline-block;
   line-height: 45px;
   vertical-align:middle;
 }
-.Leaderboard .player .player-image img {
+.Leaderboard .hover-card .hover-card-image img {
   border-radius:50%;
   width:35px;
   height:35px;
@@ -250,7 +272,7 @@ input {
   vertical-align:middle;
 }
 
-.Leaderboard .player .player-name.this {
+.Leaderboard .hover-card .hover-card-name.this {
   font-weight:800;
   font-size:1.25rem;
   color:green;
@@ -261,11 +283,8 @@ input {
   100% {transform: rotate(15deg);}
 }
 
-#logoImg { /*Remove this if you want, I think it looks cool lol*/
-  /*Yes it does
-  I changed the svg to make it look fine.
-  Thanks for adding it.
-  */
+#logoImg {
+  touch-action: none;
   width: 60%;
   min-width:350px;
   animation: rotateImg 3s alternate infinite;
@@ -279,4 +298,77 @@ input {
   height:100%;
   background:rgb(108, 136, 221);
   z-index:20;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+#controls .controlbtn {
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  -moz-backdrop-filter: blur(7px);
+  -o-backdrop-filter: blur(7px);
+  -ms-backdrop-filter: blur(7px);
+  background-color: rgba(205, 202, 175, 0.85);
+  border: 3px solid rgba(195, 192, 165, 0.92);
+  max-width: 80px;
+  max-height: 80px;
+    width: 10vw;
+    height: 10vw;
+  position: static;
+  margin: 10px;
+  text-align:center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
+  display:inline-block;
+  font-size: 40px;
+  font-weight: 800;
+  cursor: pointer;
+  color: white;
+  border-radius: 5px;
+}
+#controls {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 400px;
+  height: 215px;
+  z-index: 102;
+}
+#controls[touch-enabled="false"] {
+  display: none;
+}
+#controls .controlbtn:active {
+  transform: scale(93%);
+    filter: brightness(93%);
+}
+#server {
+  position:fixed;
+  bottom: 37px;
+  right: 30px;
+  color: rgb(80, 200, 240);
+  text-decoration: none;
+  transition: .2s;
+  font-size: 1.28rem;
+}
+#server:hover {
+  transform: scale(1.21);
+  text-shadow: 5px 5px 1px rgba(0,0,0,0.3);
+}
+#quit-btn {
+  background-color: red;
+  border-radius: 1%;
+  z-index: 100;
+  position: fixed;
+  top: 5px;
+  right: 5px;
 }
