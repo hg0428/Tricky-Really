@@ -281,6 +281,7 @@ GAMES['games/enemy.js'] = function(LEVEL) {
           }
         };
         document.addEventListener('keyup', runningLevel.keyupListener);
+        alert('Press G to invert gravity.')
       },
       eachFrame: function(elapsed) {
         if (!runningLevel.hint1Given && isOverlap(runningLevel.faithTrigger, player)) {

@@ -12,13 +12,14 @@
   "author": "@hg0428",
   "license": "ISC",
   "dependencies": {
-    "@replit/database": "^2.0.1",
+    "@replit/database": "^2.0.5",
     "axios": "^0.26.1",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "node-fetch": "^3.2.4",
-    "nunjucks": "^3.2.3",
+    "node-fetch": "^3.3.2",
+    "nunjucks": "^3.2.4",
     "rate-limiter-flexible": "^2.3.6",
-    "socket.io": "^4.4.1"
+    "replit": "^0.3.1",
+    "socket.io": "^4.7.4"
   }
 }

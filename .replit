@@ -74,3 +74,11 @@ support = true
       sourceMaps = true
       stopOnEntry = false
       type = "pwa-node"
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "npm start"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
